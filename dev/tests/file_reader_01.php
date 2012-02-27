@@ -1,9 +1,5 @@
 <?php
 
-$status = false;
-
-require_once(__DIR__."/../../sp-includes/StaticProjector.php");
-
 class FR01_SimpleVisitor extends FileReaderVisitor
 {
 	private $test = null;
@@ -28,7 +24,7 @@ class FR01_SimpleVisitor extends FileReaderVisitor
 	}
 }
 
-class sp_file_reader_01 extends SPTest
+class sp_file_reader_01 extends sp_test
 {
 	protected function private_run(array $iParameters)
 	{

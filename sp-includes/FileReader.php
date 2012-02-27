@@ -6,6 +6,7 @@ class FileInfo extends ArrayConvertible
 	public $absolute_path;
 	public $relative_path; // Relative to the dirctory from which the reader has been ran
 	public $name;
+	public $basename;
 	public $extension;
 	public $is_dir;
 	
@@ -36,6 +37,44 @@ abstract class FileReaderVisitor
 	public function file_excludes() { return $this -> file_excludes; }
 	
 	abstract public function process(FileInfo $iReader);
+}
+
+class SimpleDirectoryContentList extends FileReaderVisitor
+{
+	private $name_list;
+	private $processed;
+	
+	public function __construct($iDirectory)
+	{
+		$this -> basedir = $iDirectory;
+		$this -> is_recursive = false;
+		$this -> with_details = false;
+		
+		$this -> name_list = array();
+		$this -> processed = false;
+	}
+
+	public function process(FileInfo $iReader)
+	{
+		if($this -> processed)
+		{
+			// In case of second processing
+			$this -> name_list = array();
+			$this -> processed = false;
+		}
+		array_push($this -> name_list, $iReader -> name);
+	}
+	
+	public function get_list()
+	{
+		if(! $this -> processed)
+		{
+			// Dump the first element which is the parent directory
+			array_shift($this->name_list);
+			$this -> processed = true;
+		}
+		return $this->name_list;
+	}
 }
 
 class FileReader
@@ -79,6 +118,7 @@ class FileReader
 				$local_path = substr($path,0,strlen($path)-1);
 			
 			$local_info -> name = basename($local_path);
+			$local_info -> basename = basename($local_path);
 			$local_info -> absolute_path = $local_path;
 		}
 		else
@@ -87,7 +127,7 @@ class FileReader
 			$local_info -> name = basename($path);
 			
 			preg_match_all("/^(.+)\.([a-zA-Z0-9]+)$/", $local_info -> name, $matches);
-			$local_info -> name = $matches[1][0];
+			$local_info -> basename = $matches[1][0];
 			$local_info -> extension = $matches[2][0];
 			
 			if($details)

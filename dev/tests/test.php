@@ -1,6 +1,6 @@
 <?php
 
-abstract class SPTest
+abstract class sp_test
 {
 	private $ref_name = null;
 	private $out_name = null;
@@ -48,11 +48,15 @@ abstract class SPTest
 		if($check_ref && $test_success)
 		{
 			fclose($this -> out_fp);
-			$out_array = file($this -> out_name);
-			$ref_array = file($this -> ref_name);
-			$diff1 = array_diff($out_array,$ref_array);
-			$diff2 = array_diff($ref_array,$out_array);
-			$success = 0 == count($diff1) && 0 == count($diff2);
+			$success = false;
+			if(file_exists($this -> out_name) && file_exists($this -> ref_name))
+			{
+				$out_array = file($this -> out_name);
+				$ref_array = file($this -> ref_name);
+				$diff1 = array_diff($out_array,$ref_array);
+				$diff2 = array_diff($ref_array,$out_array);
+				$success = (0 == count($diff1) && 0 == count($diff2));
+			}
 		}
 		
 		return $success;
