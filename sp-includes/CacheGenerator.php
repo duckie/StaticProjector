@@ -88,25 +88,28 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 		}
 		
 		// Adding rich data 
-		$meta_file = $cache_file.sp_StaticProjector::file_metadata_ext;
-		$json_data = array();
-		if(file_exists($meta_file))
+		if(!empty($info -> relative_path))
 		{
-			$json_data = json_decode(file_get_contents($meta_file), true);
-		}
-		if(!array_key_exists(sp_StaticProjector::file_metadata_title_field, $json_data))
-		{
-			$json_data[sp_StaticProjector::file_metadata_title_field] = $info->basename;
-		}
-		foreach($this->meta_additional_fields as $field)
-		{
-			if(!array_key_exists($field,$json_data))
+			$meta_file = $cache_file.sp_StaticProjector::file_metadata_ext;
+			$json_data = array();
+			if(file_exists($meta_file))
 			{
-				$json_data[$field]="";
+				$json_data = json_decode(file_get_contents($meta_file), true);
 			}
+			if(!array_key_exists(sp_StaticProjector::file_metadata_title_field, $json_data))
+			{
+				$json_data[sp_StaticProjector::file_metadata_title_field] = $info->basename;
+			}
+			foreach($this->meta_additional_fields as $field)
+			{
+				if(!array_key_exists($field,$json_data))
+				{
+					$json_data[$field]="";
+				}
+			}
+			$json_string = json_encode($json_data);
+			file_put_contents($meta_file, $json_string);
 		}
-		$json_string = json_encode($json_data);
-		file_put_contents($meta_file, $json_string);
 	}
 }
 
