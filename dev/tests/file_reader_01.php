@@ -1,29 +1,46 @@
 <?php
 
 $status = false;
-echo("Test begin <br />\n");
+
 require_once(__DIR__."/../../sp-includes/StaticProjector.php");
 
-class SimpleVisitor extends FileReaderVisitor
+class FR01_SimpleVisitor extends FileReaderVisitor
 {
-	public function __construct()
+	private $test = null;
+	
+	public function __construct($iTestObj, $iRepo)
 	{
-		$this -> basedir = __DIR__."/testdata/repository1/";
+		$this -> test = $iTestObj;
+		$this -> basedir = $iRepo;
 	}
 	
 	public function process(FileInfo $iReader)
 	{
-		echo($iReader -> absolute_path);
-		echo("<br />");
+		$info_array = $iReader -> as_array();
+		
+		// Deleting value depending on the local image
+		unset($info_array["absolute_path"]);
+		unset($info_array["last_modified_timestamp"]);
+		unset($info_array["last_modified_date"]);
+		unset($info_array["exif_datetime"]);
+		
+		$this -> test -> write(json_encode($info_array)."\n");
 	}
 }
 
-$info1 = FileReader::get_file_info(__DIR__."/testdata/repository1/images/list1/image_01.jpg", true);
-$test = $info1 -> as_array();
+class sp_file_reader_01 extends SPTest
+{
+	protected function private_run(array $iParameters)
+	{
+		//$info1 = FileReader::get_file_info(__DIR__."/testdata/repository1/images/list1/image_01.jpg", true);
+		//$test = $info1 -> as_array();
 
-$vis = new SimpleVisitor();
-$reader = new FileReader($vis);
-$reader -> run();
-$status = true;
+		$vis = new FR01_SimpleVisitor($this, $iParameters["repo"]);
+		$reader = new FileReader($vis);
+		$reader -> run();
+		$status = true;
+		
+		return $status;
+	}
 
-echo("<br />\n Test ended with status ".($status?"OK":"FAILED")."<br />\n");
+}

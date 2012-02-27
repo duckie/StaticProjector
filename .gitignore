@@ -1,0 +1,7 @@
+.buildpath
+.htaccess
+.project
+.settings
+cache
+user-cache
+dev/tests/output
