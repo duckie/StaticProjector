@@ -49,6 +49,12 @@ abstract class sp_FileReaderVisitor
 		}
 	}
 	
+	public function enter_directory(sp_FileInfo $iFileInfo)
+	{}
+	
+	public function exit_directory(sp_FileInfo $iFileInfo)
+	{}
+	
 	abstract public function process(sp_FileInfo $iFileInfo);
 }
 
@@ -125,25 +131,15 @@ class sp_RecursiveDeleter extends sp_FileReaderVisitor
 	
 	public function process(sp_FileInfo $iReader)
 	{
-		if($iReader -> is_dir)
-			array_push($this -> name_list, $iReader->absolute_path);
-		else
+		if( ! $iReader -> is_dir)
 			unlink($iReader->absolute_path);
 	}
 	
-	public function execute()
+	public function exit_directory(sp_FileInfo $info)
 	{
-		if(! $this -> is_processed())
-		{
-			parent::execute();
-			$list_to_delete = array_reverse($this -> name_list);
-			foreach($list_to_delete as $path)
-			{
-				closedir(opendir($path)); // Windows issue with folders staying open
-				rmdir($path);
-			}
-		}
-	}
+		closedir(opendir($info->absolute_path)); // Windows issue with folders staying open
+		rmdir($info->absolute_path);
+	}	
 }
 
 class sp_FileReader
@@ -225,6 +221,7 @@ class sp_FileReader
 		if($local_info -> is_dir && 0 < $max_iter)
 		{			
 			$dir = dir($local_info -> absolute_path);
+			$this -> visitor -> enter_directory($local_info);
 			while (false !== ($entry = $dir->read()))
 			{
 				if("." !== $entry && ".." !== $entry)
@@ -232,8 +229,8 @@ class sp_FileReader
 					$next_path = $local_info -> absolute_path."/".$entry;
 					$this -> recursive_read($next_path, $max_iter - 1);
 				}
-
 			}
+			$this -> visitor -> exit_directory($local_info);
 		}		
 	}
 	
