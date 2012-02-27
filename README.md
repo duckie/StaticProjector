@@ -13,8 +13,8 @@ What StaticProjector brings to you:
 
 * High-performance: lighweight code with cache systems
 * No database
-* Easy host change: since the system is file based, the only thing you have to do is copying the files
-* Security: no session model and no admin panels means less security flaw. Plus, the CMS do no write anything into your data folder, so you can forbid the PHP runtime to write into it.
+* Easy host change: since the system is file based, the only thing you have to do is copy the files
+* Security: no session model and no admin panels means less security flaws. Plus, the CMS do no write anything into your data folder, so you can forbid the PHP runtime to write into it.
 
 What StaticProjector does not:
 
