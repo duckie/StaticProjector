@@ -1,6 +1,6 @@
 <?php
 
-class FR01_SimpleVisitor extends FileReaderVisitor
+class FR01_SimpleVisitor extends sp_FileReaderVisitor
 {
 	private $test = null;
 	
@@ -10,11 +10,11 @@ class FR01_SimpleVisitor extends FileReaderVisitor
 		$this -> basedir = $iRepo;
 	}
 	
-	public function process(FileInfo $iReader)
+	public function process(sp_FileInfo $iReader)
 	{
 		$info_array = $iReader -> as_array();
 		
-		// Deleting value depending on the local image
+		// Deleting values which depend of the local computer
 		unset($info_array["absolute_path"]);
 		unset($info_array["last_modified_timestamp"]);
 		unset($info_array["last_modified_date"]);
@@ -28,12 +28,8 @@ class sp_file_reader_01 extends sp_test
 {
 	protected function private_run(array $iParameters)
 	{
-		//$info1 = FileReader::get_file_info(__DIR__."/testdata/repository1/images/list1/image_01.jpg", true);
-		//$test = $info1 -> as_array();
-
 		$vis = new FR01_SimpleVisitor($this, $iParameters["repo"]);
-		$reader = new FileReader($vis);
-		$reader -> run();
+		$vis -> execute();
 		$status = true;
 		
 		return $status;

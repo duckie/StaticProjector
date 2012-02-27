@@ -2,14 +2,12 @@
 
 /**
  * ArrayConvertible allows any extending class to be a struct
- * easily convertible in an array. It makes thoses classes 
- * more usable for both the developer of the classes and
+ * easily convertible in an array. It makes those classes 
+ * more usable for both the developer of the class and
  * their users
- *  
- * @author Jean-Bernard Jansen
  *
  */
-abstract class ArrayConvertible
+abstract class sp_ArrayConvertible
 {
 	/**
 	 * Reads all the public properties and return them and their

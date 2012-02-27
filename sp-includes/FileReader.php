@@ -1,6 +1,6 @@
 <?php
 
-class FileInfo extends ArrayConvertible
+class sp_FileInfo extends sp_ArrayConvertible
 {
 	// Basic
 	public $absolute_path;
@@ -21,8 +21,10 @@ class FileInfo extends ArrayConvertible
 	public $exif_tags;	
 }
 
-abstract class FileReaderVisitor
+abstract class sp_FileReaderVisitor
 {
+	private $processed = false;
+	
 	protected $basedir = ".";
 	protected $is_recursive = true;
 	protected $with_details = true;
@@ -33,51 +35,118 @@ abstract class FileReaderVisitor
 	public function basedir() { return $this -> basedir; }
 	public function is_recursive() { return $this -> is_recursive; }
 	public function with_details() { return $this -> with_details; }
-	public function path_excludes() { return $this -> path_excludes; }
-	public function file_excludes() { return $this -> file_excludes; }
+	public function is_processed() { return $this -> processed; }
+	//public function path_excludes() { return $this -> path_excludes; }
+	//public function file_excludes() { return $this -> file_excludes; }
 	
-	abstract public function process(FileInfo $iReader);
+	public function execute()
+	{
+		if(! $this->processed)
+		{
+			$local_reader = new sp_FileReader($this);
+		 	$local_reader -> run();
+		 	$this->processed = true;
+		}
+	}
+	
+	abstract public function process(sp_FileInfo $iFileInfo);
 }
 
-class SimpleDirectoryContentList extends FileReaderVisitor
+class sp_SimpleDirectoryContentList extends sp_FileReaderVisitor
 {
 	private $name_list;
-	private $processed;
 	
 	public function __construct($iDirectory)
 	{
 		$this -> basedir = $iDirectory;
 		$this -> is_recursive = false;
 		$this -> with_details = false;
-		
 		$this -> name_list = array();
-		$this -> processed = false;
 	}
 
-	public function process(FileInfo $iReader)
+	public function process(sp_FileInfo $iReader)
 	{
-		if($this -> processed)
-		{
-			// In case of second processing
-			$this -> name_list = array();
-			$this -> processed = false;
-		}
 		array_push($this -> name_list, $iReader -> name);
+	}
+	
+	public function execute()
+	{
+		if(! $this -> is_processed())
+		{
+			parent::execute();
+			array_shift($this->name_list);
+		}
 	}
 	
 	public function get_list()
 	{
-		if(! $this -> processed)
-		{
-			// Dump the first element which is the parent directory
-			array_shift($this->name_list);
-			$this -> processed = true;
-		}
+		$this -> execute();
 		return $this->name_list;
 	}
 }
 
-class FileReader
+class sp_RecursiveCopier extends sp_FileReaderVisitor
+{
+	private $dst;
+	
+	public function __construct($iSrc, $iDst)
+	{
+		$this -> basedir = $iSrc;
+		$this -> dst = $iDst;		
+		$this -> with_details = false;
+	}
+	
+	public function execute()
+	{
+		if(!file_exists($this->dst) && is_dir($this->basedir))
+			mkdir($this->dst);
+		parent::execute();
+	}
+
+	public function process(sp_FileInfo $iReader)
+	{
+		if($iReader -> is_dir)
+			@mkdir($this->dst.$iReader->relative_path);
+		else
+			@copy($this->basedir.$iReader->relative_path , $this->dst.$iReader->relative_path);
+	}
+}
+
+class sp_RecursiveDeleter extends sp_FileReaderVisitor
+{
+	private $name_list;
+	
+	public function __construct($iFile)
+	{
+		$this -> basedir = $iFile;
+		$this -> with_details = false;
+		$this -> name_list = array();
+	}
+	
+	public function process(sp_FileInfo $iReader)
+	{
+		if($iReader -> is_dir)
+			array_push($this -> name_list, $iReader->absolute_path);
+		else
+			unlink($iReader->absolute_path);
+	}
+	
+	public function execute()
+	{
+		if(! $this -> is_processed())
+		{
+			parent::execute();
+			$list_to_delete = array_reverse($this -> name_list);
+			foreach($list_to_delete as $path)
+			{
+				closedir(opendir($path)); // Windows issue with folders staying open
+				rmdir($path);
+			}
+		}
+	}
+}
+
+class sp_FileReader
 {
 	private $visitor;
 	private $details;
@@ -90,7 +159,7 @@ class FileReader
 	 * 
 	 * @param FileReaderVisitor $iVisitor
 	 */
-	public function __construct(FileReaderVisitor $iVisitor)
+	public function __construct(sp_FileReaderVisitor $iVisitor)
 	{
 		$this -> visitor = $iVisitor;
 	}
@@ -100,7 +169,7 @@ class FileReader
 		if(!file_exists($path))
 			return null;
 		
-		$local_info = new FileInfo();
+		$local_info = new sp_FileInfo();
 		$local_info -> is_dir = is_dir($path);
 		$local_info -> relative_path = null;
 		

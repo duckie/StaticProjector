@@ -5,10 +5,18 @@ require_once(__DIR__."/FileReader.php");
 require_once(__DIR__."/CacheGenerator.php");
 
 
-class StaticProjector
+class sp_StaticProjector
 {
 	private $basedir;
 	private $request;
+	
+	const data_dir = "data";
+	const user_cache_dir = "user-cache";
+	const cache_dir = "cache";
+	const file_order_name = "_sp_fileorder.txt";
+	const file_metadata_ext = ".json";
+	const file_metadata_title_field = "title";
+	const file_metadata_additional_fields = "link;alt;comment";
 	
 	/**
 	 * StaticProjector constructor
@@ -27,7 +35,7 @@ class StaticProjector
 	
 	public function run()
 	{
-		$cache_gen = new CacheGenerator($this);
+		$cache_gen = new sp_CacheGenerator($this);
 		$cache_gen -> run();
 	}
 	

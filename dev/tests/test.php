@@ -51,8 +51,8 @@ abstract class sp_test
 			$success = false;
 			if(file_exists($this -> out_name) && file_exists($this -> ref_name))
 			{
-				$out_array = file($this -> out_name);
-				$ref_array = file($this -> ref_name);
+				$out_array = file($this -> out_name, FILE_IGNORE_NEW_LINES);
+				$ref_array = file($this -> ref_name, FILE_IGNORE_NEW_LINES);
 				$diff1 = array_diff($out_array,$ref_array);
 				$diff2 = array_diff($ref_array,$out_array);
 				$success = (0 == count($diff1) && 0 == count($diff2));
