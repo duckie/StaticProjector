@@ -214,8 +214,9 @@ class sp_FileReader
 	}
 	
 	private function recursive_read($path, $max_iter)
-	{
+	{ 
 		$local_info = self::get_file_info($path, $this -> visitor -> with_details());
+		if(null == $local_info) throw new ErrorException("The path ".$this->visitor->basedir()."has not been found.");
 		$local_info -> relative_path = str_replace($this->visitor->basedir(), "", $local_info -> absolute_path);
 		$this -> visitor -> process($local_info);
 		if($local_info -> is_dir && 0 < $max_iter)
