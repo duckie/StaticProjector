@@ -1,0 +1,11 @@
+Here is a short example for git sparse-checkout
+
+$ git clone ~/git/git
+$ cd git
+$ ls|wc -l
+361
+$ git config core.sparsecheckout true
+$ echo ppc/ > .git/info/sparse-checkout
+$ echo perl/ >> .git/info/sparse-checkout
+$ git read-tree -m -u HEAD
+$ ls
