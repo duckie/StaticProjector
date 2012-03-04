@@ -113,6 +113,62 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 	}
 }
 
+class sp_PrivateCacheGenerator extends sp_FileReaderVisitor
+{
+	private $sp;
+	private $cache_dir;
+	
+	private $dic_file;
+	private $dic_fp;
+	
+	private $current_file_stack = array();
+	private $current_file_order = null;
+
+	private $meta_additional_fields;
+
+	public function __construct(sp_StaticProjector $iSP)
+	{
+		$this -> sp = $iSP;
+		$this -> basedir = $this -> sp -> basedir()."/".sp_StaticProjector::data_dir;
+		$this -> cache_dir = $this -> sp -> basedir()."/".sp_StaticProjector::cache_dir;
+		$this -> with_details = true;
+		$this -> is_recursive = true;
+		
+		$this -> dic_file = $this -> cache_dir."/dico.json";
+		$this -> dic_array = array();
+		
+		$this -> current_file_order = null;
+
+		$this -> meta_additional_fields = explode(";", sp_StaticProjector::file_metadata_additional_fields);
+	}
+	
+	public function enter_directory(sp_FileInfo $info)
+	{
+		if(null != $this -> current_file_order)
+			array_push($this -> current_file_stack, $this -> current_file_order);
+		
+		$file_order_file = $info -> absolute_path.".".sp_StaticProjector::file_order_name;
+		if(! file_exists($file_order_file)) throw new ErrorException("The order file $file_order_file has not been found, check that the user cache is generated");
+		$this -> current_file_order = file($file_order_file, FILE_IGNORE_NEW_LINES);
+	}
+	
+	public function exit_directory(sp_FileInfo $info)
+	{
+		$this -> current_file_order = array_pop($this -> current_file_stack);
+	}
+
+	public function process(sp_FileInfo $info)
+	{
+		$info_to_store = $info -> as_array();
+		$info_to_store["order_index"] = array_search($info -> name, $this -> current_file_order);
+		$user_cache_file = $info -> absolute_path.sp_StaticProjector::file_metadata_ext;
+		if(! file_exists($user_cache_file)) throw new ErrorException("The metadata file $user_cache_file has not been found, check that the user cache is generated");
+		$user_cache_data = json_decode(file_get_contents($user_cache_file), true);
+		$info_to_store = array_merge($info_to_store, $user_cache_data);
+		array_push($this -> dic_array, json_encode($info_to_store));
+	}
+}
+
 
 class sp_CacheGenerator 
 {
