@@ -30,3 +30,14 @@ abstract class sp_ArrayConvertible
 		return $result;
 	}
 }
+
+function sp_dump_array(&$iArray, $iFileName)
+{
+	$fp = fopen($iFileName,"w");
+	foreach($iArray as $value)
+	{
+		fwrite($fp,$value."\n");
+	}
+	fclose($fp);
+}
+

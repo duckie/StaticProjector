@@ -18,6 +18,9 @@ class sp_StaticProjector
 	const file_metadata_title_field = "title";
 	const file_metadata_additional_fields = "template;link;alt;comment";
 	
+	const dic_file = "db.dico";
+	//const dic_file = "db.dico";
+	
 	/**
 	 * StaticProjector constructor
 	 * 
@@ -37,6 +40,9 @@ class sp_StaticProjector
 	{
 		$cache_gen = new sp_CacheGenerator($this);
 		$cache_gen -> run();
+		
+		
+		
 	}
 	
 	public function basedir()
