@@ -33,11 +33,18 @@ abstract class sp_ArrayConvertible
 
 function sp_dump_array(&$iArray, $iFileName)
 {
-	$fp = fopen($iFileName,"w");
+	$fp = @fopen($iFileName,"w");
+	if(!$fp) throw new ErrorException("The path $iFileName cannot be opened. Check the directory.");
 	foreach($iArray as $value)
 	{
 		fwrite($fp,$value."\n");
 	}
 	fclose($fp);
+}
+
+function sp_forbid_http_access($iDirectoryName)
+{
+	assert(is_dir($iDirectoryName));
+	file_put_contents("$iDirectoryName/.htaccess", "deny from all\n");
 }
 

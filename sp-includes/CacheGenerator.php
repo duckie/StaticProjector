@@ -4,36 +4,40 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 {
 	private $sp;
 	private $uc_dir;
-	
+	private $conf_dir;
+	private $cache_dir;
 	private $meta_additional_fields;
+	private $routes;
 	
 	public function __construct(sp_StaticProjector $iSP)
 	{
 		$this -> sp = $iSP;
 		$this -> basedir = $this -> sp -> basedir()."/".sp_StaticProjector::data_dir;
 		$this -> uc_dir = $this -> sp -> basedir()."/".sp_StaticProjector::user_cache_dir;
+		$this -> conf_dir = $this -> sp -> basedir()."/".sp_StaticProjector::config_dir;
+		$this -> cache_dir = $this -> sp -> basedir()."/".sp_StaticProjector::cache_dir;
 		$this -> with_details = false;
 		$this -> is_recursive = true;
-		
 		$this -> meta_additional_fields = explode(";", sp_StaticProjector::file_metadata_additional_fields);
+		$this -> routes = array();
 	}
 	
-	public function process(sp_FileInfo $info)
+	public function enter_directory(sp_FileInfo $info)
 	{
-		$cache_file = $this -> uc_dir.$info -> relative_path;
-		if($info -> is_dir)
+		$cache_dir = $this -> uc_dir.$info -> relative_path;
+		
+		// Creating the folder if missing
+		if(!is_dir($cache_dir))
 		{
-			// Create the cache dir if does not exists
-			$cache_dir = $cache_file;
-			if(!is_dir($cache_dir))
-			{
-				if(file_exists($cache_dir))
-					unlink($cache_dir);
-				
-				mkdir($cache_dir);
-			}
+			// Deleting any occurence of a directory which was a file before
+			if(file_exists($cache_dir))
+				unlink($cache_dir);
 
-			// Handling file order lists update
+			@mkdir($cache_dir,null,true);
+		}
+
+		// Handling file order lists update
+		//{
 			$local_vis = new sp_SimpleDirectoryContentList($info -> absolute_path);
 			$file_list = $local_vis -> get_list();
 			$cache_list = array();
@@ -43,7 +47,7 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 				$cache_list = file($file_order_name, FILE_IGNORE_NEW_LINES);
 				// Search the files which do not exists anymore
 				$not_existing_files = array_diff($cache_list,$file_list);
-				
+
 				// Delete those files from the cache
 				foreach ($not_existing_files as $file)
 				{
@@ -52,12 +56,16 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 					{
 						$del = new sp_RecursiveDeleter($path);
 						$del->execute();
+
+						// Also delete rich data
+						$del = new sp_RecursiveDeleter($path.sp_StaticProjector::file_metadata_ext);
+						$del->execute();
 					}
 				}
-				
+
 				// Remove them from the list
 				$cache_list = array_intersect($cache_list,$file_list);
-				
+
 				// Get the ones which are not in the list
 				$new_files = array_diff($file_list,$cache_list);
 				foreach ($new_files as $file)
@@ -69,22 +77,26 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 			{
 				$cache_list = $file_list;
 			}
-			
-			$fp = fopen($file_order_name,'w');
-			foreach($cache_list as $file)
-				fwrite($fp,"$file\n");
-			
-			fclose($fp);
-			//$local_reader = new FileReader($local_vis);
-		}
+
+			sp_dump_array($cache_list,$file_order_name);
+		//}
+		
+		// Adding route patterns
+		if(empty($info -> relative_path))
+			array_push($this -> routes, "/ -> default()");
 		else
+			array_push($this -> routes, $info -> relative_path."/([^/]) -> default()");
+	}
+	
+	public function process(sp_FileInfo $info)
+	{
+		$cache_file = $this -> uc_dir.$info -> relative_path;
+
+		// Deleting any occurence of a directory which is now a file
+		if(file_exists($cache_file) && is_dir($cache_file))
 		{
-			// Deleting any occurence of a directory which is now a file
-			if(file_exists($cache_file))
-			{
-				$del = new sp_RecursiveDeleter($cache_file);
-				$del->execute();
-			}
+			$del = new sp_RecursiveDeleter($cache_file);
+			$del->execute();
 		}
 		
 		// Adding rich data 
@@ -109,6 +121,31 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 			}
 			$json_string = json_encode($json_data);
 			file_put_contents($meta_file, $json_string);
+		}
+		
+		// Default route
+		if(!empty($info -> relative_path))
+			array_push($this -> routes, $info -> relative_path." -> default()");
+	}
+	
+	public function execute()
+	{
+		if( ! $this -> is_processed())
+		{
+			if(! file_exists($this -> cache_dir))
+			{
+				@mkdir($this -> cache_dir, null, true);
+			}
+			parent::execute();
+			
+			$route_file = $this -> conf_dir."/".sp_StaticProjector::routes_file;
+			if(!file_exists($route_file))
+			{
+				touch($route_file);
+			}
+			sp_dump_array($this -> routes, $this -> cache_dir."/".sp_StaticProjector::routes_default_file);
+			sp_forbid_http_access($this -> conf_dir);
+			sp_forbid_http_access($this -> uc_dir);
 		}
 	}
 }
@@ -171,6 +208,12 @@ class sp_PrivateCacheGenerator extends sp_FileReaderVisitor
 	
 	public function execute()
 	{
+		if( ! file_exists($this -> cache_dir))
+		{
+			@mkdir($this -> cache_dir, null, true);
+			sp_forbid_http_access($this -> cache_dir);
+		}
+		assert(is_dir($this -> cache_dir));
 		parent::execute();
 		sp_dump_array($this -> dic_array, $this -> dic_file);
 	}

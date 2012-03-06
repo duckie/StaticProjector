@@ -11,7 +11,9 @@ class sp_StaticProjector
 	private $request;
 	
 	const data_dir = "data";
-	const user_cache_dir = "user-cache";
+	const user_cache_dir = "user-cache/data";
+	const config_dir = "user-cache";
+	const templates_dir = "user-cache/templates";
 	const cache_dir = "cache";
 	const admin_dir = "admin";
 	
@@ -21,6 +23,8 @@ class sp_StaticProjector
 	const file_metadata_additional_fields = "template;link;alt;comment";
 	
 	const dic_file = "db.dico";
+	const routes_file = "routes.txt";
+	const routes_default_file = "routes.default.txt";
 	
 	/**
 	 * StaticProjector constructor

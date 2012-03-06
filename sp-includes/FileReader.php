@@ -192,8 +192,8 @@ class sp_FileReader
 			$local_info -> name = basename($path);
 			
 			preg_match_all("/^(.+)\.([a-zA-Z0-9]+)$/", $local_info -> name, $matches);
-			$local_info -> basename = $matches[1][0];
-			$local_info -> extension = $matches[2][0];
+			$local_info -> basename = isset($matches[1][0]) ? $matches[1][0] : "";
+			$local_info -> extension = isset($matches[2][0]) ? $matches[2][0] : "";
 			
 			if($details)
 			{
