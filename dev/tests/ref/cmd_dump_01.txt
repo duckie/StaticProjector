@@ -1,0 +1,4 @@
+default["\/pages\/text1.md"]
+default["\/pages\/text1.md"]
+default["\/images\/roger","roger"]
+my_template-01["gallery\/roger","roger"]

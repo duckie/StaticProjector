@@ -2,6 +2,6 @@
 .htaccess
 .project
 .settings
-cache
-user-cache
+/cache
+/user-cache
 dev/tests/output

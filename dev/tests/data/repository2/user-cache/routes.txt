@@ -1,0 +1,3 @@
+/ -> default(/pages/text1.md)
+/images/([^/]+) -> default()
+/gal/([^/]+) -> my_template-01(gallery/$1)

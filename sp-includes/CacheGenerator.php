@@ -85,7 +85,7 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 		if(empty($info -> relative_path))
 			array_push($this -> routes, "/ -> default()");
 		else
-			array_push($this -> routes, $info -> relative_path."/([^/]) -> default()");
+			array_push($this -> routes, $info -> relative_path."/([^/]+) -> default()");
 	}
 	
 	public function process(sp_FileInfo $info)
