@@ -3,6 +3,7 @@
 require_once(__DIR__."/Utils.php");
 require_once(__DIR__."/FileReader.php");
 require_once(__DIR__."/CacheGenerator.php");
+require_once(__DIR__."/Commands.php");
 
 
 class sp_StaticProjector
@@ -46,8 +47,8 @@ class sp_StaticProjector
 		$cache_gen = new sp_CacheGenerator($this);
 		$cache_gen -> run();
 		
-		
-		
+		$commands = new sp_Commands($this);
+		$commands -> parse_request($this -> request);
 	}
 	
 	public function basedir()
