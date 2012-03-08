@@ -42,9 +42,29 @@ function sp_dump_array(&$iArray, $iFileName)
 	fclose($fp);
 }
 
-function sp_forbid_http_access($iDirectoryName)
+define("SP_HTTP_NO_RULE",0);
+define("SP_HTTP_ALLOW_ACCESS",1);
+define("SP_HTTP_DENY_LISTING",2);
+define("SP_HTTP_DENY_ACCESS",3);
+
+/**
+ * Sets how a given directory can be accessed through the server
+ * 
+ * Warning : Beyond so far, this only uses a .htaccess
+ * 
+ * @param string $iDirectoryName The path to the directory that has to be managed
+ * @param int $iGrant Can take the value SP_HTTP_NO_RULE, SP_HTTP_ALLOW_ACCESS, SP_HTTP_DENY_LISTING or SP_HTTP_DENY_ACCESS
+ */
+function sp_set_http_granting($iDirectoryName, $iGrant)
 {
 	assert(is_dir($iDirectoryName));
-	file_put_contents("$iDirectoryName/.htaccess", "deny from all\n");
+	if(SP_HTTP_NO_RULE == $iGrant)
+		file_put_contents("$iDirectoryName/.htaccess", "");
+	else if(SP_HTTP_ALLOW_ACCESS == $iGrant)
+		file_put_contents("$iDirectoryName/.htaccess", "Options +Indexes\n");
+	else if(SP_HTTP_DENY_LISTING == $iGrant)
+		file_put_contents("$iDirectoryName/.htaccess", "Options -Indexes\n");
+	else if(SP_HTTP_DENY_ACCESS == $iGrant)
+		file_put_contents("$iDirectoryName/.htaccess", "deny from all\n");
 }
 
