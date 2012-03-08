@@ -78,7 +78,7 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 				$cache_list = $file_list;
 			}
 
-			sp_dump_array($cache_list,$file_order_name);
+			sp_ArrayUtils::dump_array($cache_list,$file_order_name);
 		//}
 		
 		// Adding route patterns
@@ -143,7 +143,7 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 			{
 				touch($route_file);
 			}
-			sp_dump_array($this -> routes, $this -> cache_dir."/".sp_StaticProjector::routes_default_file);
+			sp_ArrayUtils::dump_array($this -> routes, $this -> cache_dir."/".sp_StaticProjector::routes_default_file);
 			sp_set_http_granting($this -> conf_dir, SP_HTTP_DENY_ACCESS);
 			sp_set_http_granting($this -> uc_dir, SP_HTTP_DENY_ACCESS);
 		}
@@ -203,7 +203,7 @@ class sp_PrivateCacheGenerator extends sp_FileReaderVisitor
 		if(! file_exists($user_cache_file)) throw new ErrorException("The metadata file $user_cache_file has not been found, check that the user cache is generated");
 		$user_cache_data = json_decode(file_get_contents($user_cache_file), true);
 		$info_to_store = array_merge($info_to_store, $user_cache_data);
-		array_push($this -> dic_array, json_encode($info_to_store));
+		array_push($this -> dic_array, $info_to_store);
 	}
 	
 	public function execute()
@@ -215,7 +215,7 @@ class sp_PrivateCacheGenerator extends sp_FileReaderVisitor
 		}
 		assert(is_dir($this -> cache_dir));
 		parent::execute();
-		sp_dump_array($this -> dic_array, $this -> dic_file);
+		sp_ArrayUtils::store_array($this -> dic_array, $this -> dic_file);
 	}
 }
 
