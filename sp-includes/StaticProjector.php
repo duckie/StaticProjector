@@ -1,6 +1,7 @@
 <?php
 
 require_once(__DIR__."/Utils.php");
+require_once(__DIR__."/Config.php");
 require_once(__DIR__."/FileReader.php");
 require_once(__DIR__."/CacheGenerator.php");
 require_once(__DIR__."/Commands.php");
@@ -11,18 +12,18 @@ class sp_StaticProjector
 	private $basedir;
 	private $request;
 	
+	const version = "0.1";
 	const data_dir = "data";
-	const user_cache_dir = "user-cache/data";
-	const config_dir = "user-cache";
-	const templates_dir = "user-cache/templates";
+	const user_cache_dir = "web-data/data";
+	const config_dir = "web-data";
+	const templates_dir = "web-data/templates";
 	const cache_dir = "cache";
-	const admin_dir = "admin";
-	
+	const defaults_dir = "sp-includes/defaults";
+	const config_file = "config.txt";
 	const file_order_name = "_sp_fileorder.txt";
-	const file_metadata_ext = ".json";
+	const file_metadata_ext = ".txt";
 	const file_metadata_title_field = "title";
 	const file_metadata_additional_fields = "template;link;alt;comment";
-	
 	const dic_file = "db.dico";
 	const routes_file = "routes.txt";
 	const routes_default_file = "routes.default.txt";
