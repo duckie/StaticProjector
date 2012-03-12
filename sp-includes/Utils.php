@@ -175,27 +175,39 @@ class sp_ArrayUtils
 	 */
 	private function compute_array_depth_cb1($iCurrentDepthAndLevel, &$iNextArray)
 	{
-		$iCurrentDepthAndLevel[0] = max($iCurrentDepthAndLevel[0], self::compute_array_depth($iNextArray, $iCurrentDepthAndLevel));
+		$iCurrentDepthAndLevel[0] = max($iCurrentDepthAndLevel[0], self::compute_array_depth_cb2($iNextArray, $iCurrentDepthAndLevel));
 		return $iCurrentDepthAndLevel; 
 	}
 	
 	/**
-	 * Returns the array depth
+	 * Private callback which is part of sp_ArrayUtils::compute_array_depth implementation
 	 *
-	 * 0 means the argument is not an array
-	 * 1 is the depth of a basic array
-	 *
-	 * @param mixed $iArray
-	 * @param int $iRecurseLevel
+	 * @param $iArray
+	 * @param array $iCurrentDepthAndLevel
 	 * @return int
 	 */
-	public static function compute_array_depth(&$iArray, $iCurrentDepthAndLevel = array(0,100))
+	private function compute_array_depth_cb2(&$iArray, $iCurrentDepthAndLevel = array(0,100))
 	{
 		if(!is_array($iArray) || 0 >= $iCurrentDepthAndLevel[1]) return 0;
 		$iCurrentDepthAndLevel[0] += 1;
 		$iCurrentDepthAndLevel[1] -= 1;
 		$result = array_reduce($iArray, "sp_ArrayUtils::compute_array_depth_cb1", $iCurrentDepthAndLevel);
 		return $result[0];
+	}
+	
+	/**
+	 * Returns the array depth
+	 *
+	 * This function computes recursively the depth of a given array.
+	 * For instance, the depth of array(1,array(array(1)),array(1),true,"ok") is 3.
+	 *
+	 * @param mixed $iArray An array, multidimensional or not
+	 * @param array $iRecurseLevel Max depth computable, defautl 100 (which is huge)
+	 * @return int 0 if not an array, depth otherwise
+	 */
+	public static function compute_array_depth(&$iArray, $iRecurseLevel = 100)
+	{
+		return self::compute_array_depth_cb2($iArray,array(0,$iRecurseLevel));
 	}
 	
 	/**
@@ -206,7 +218,7 @@ class sp_ArrayUtils
 	 */
 	public function is_multidimensional_array(&$iArray)
 	{
-		return (2 == self::compute_array_depth($iArray, array(0,2)));
+		return (2 == self::compute_array_depth($iArray, 2));
 	}
 	
 	/**
@@ -302,14 +314,29 @@ class sp_ArrayUtils
 	 */
 	public static function load_array($iFileName)
 	{
-		sp_assert( file_exists($iFileName) && !is_dir($iFileName));
+		sp_assert(file_exists($iFileName) && !is_dir($iFileName));
 		include($iFileName);
 		return $sp_stored_array;
 	}
 	
-	public static function store_config(&$iArray, $iFileName)
+	public static function store_config(array &$iArray, $iFileName)
 	{
+		sp_assert( (!self::is_multidimensional_array($iArray)) && (!is_dir($iFileName)) );
+		$fp = @fopen($iFileName,'w');
+		sp_assert($fp);
 		
+		if(self::is_assoc_array($iArray))
+		{
+			foreach($iArray as $key => $value)
+				fwrite($fp,"$key=$value\n");
+		}
+		else
+		{
+			foreach($iArray as $value)
+				fwrite($fp,"$value\n");
+		}
+		
+		fclose($fp);
 	}
 	
 	public function load_config($iFileName)

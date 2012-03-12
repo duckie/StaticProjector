@@ -61,4 +61,9 @@ abstract class sp_test
 		
 		return $success;
 	}
+	
+	public function output_dir()
+	{
+		return __DIR__."/output";
+	}
 }
