@@ -198,9 +198,15 @@ class sp_ArrayUtils
 		return $result[0];
 	}
 	
-	private function is_multidimensional_array(&$iArray)
+	/**
+	 * Returns true if at least one of the elements is an array
+	 * 
+	 * @param array $iArray
+	 * @return bool
+	 */
+	public function is_multidimensional_array(&$iArray)
 	{
-		
+		return (2 == self::compute_array_depth($iArray, array(0,2)));
 	}
 	
 	/**

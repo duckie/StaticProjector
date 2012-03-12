@@ -1,1 +1,4 @@
-3
+compute_array_depth(Array1)=3
+compute_array_depth(Array2)=1
+is_multidimensional_array(Array1)=1
+is_multidimensional_array(Array2)=0
