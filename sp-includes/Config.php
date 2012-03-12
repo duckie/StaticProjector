@@ -55,7 +55,7 @@ class sp_Config
 	 */
 	private function copy_default_dile($iSrc, $iDest)
 	{
-		assert(file_exists($iSrc));
+		sp_assert(file_exists($iSrc));
 		
 		if(file_exists($iDest))
 		{

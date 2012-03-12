@@ -213,7 +213,7 @@ class sp_PrivateCacheGenerator extends sp_FileReaderVisitor
 			@mkdir($this -> cache_dir, null, true);
 			sp_forbid_http_access($this -> cache_dir);
 		}
-		assert(is_dir($this -> cache_dir));
+		sp_assert(is_dir($this -> cache_dir));
 		parent::execute();
 		sp_ArrayUtils::store_array($this -> dic_array, $this -> dic_file);
 	}

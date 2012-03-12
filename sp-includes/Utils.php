@@ -25,7 +25,7 @@ define("SP_HTTP_DENY_ACCESS",3);
  */
 function sp_set_http_granting($iDirectoryName, $iGrant)
 {
-	assert(is_dir($iDirectoryName));
+	sp_assert(is_dir($iDirectoryName));
 	if(SP_HTTP_NO_RULE == $iGrant)
 		file_put_contents("$iDirectoryName/.htaccess", "");
 	else if(SP_HTTP_ALLOW_ACCESS == $iGrant)
@@ -34,6 +34,24 @@ function sp_set_http_granting($iDirectoryName, $iGrant)
 		file_put_contents("$iDirectoryName/.htaccess", "Options -Indexes\n");
 	else if(SP_HTTP_DENY_ACCESS == $iGrant)
 		file_put_contents("$iDirectoryName/.htaccess", "deny from all\n");
+}
+
+define("SP_INFO",0);
+define("SP_WARNING",1);
+define("SP_ERROR",2);
+define("SP_FATAL",3);
+
+/**
+ * Assertion which can also be an error.
+ * 
+ * @param bool $iAssertion
+ * @param int $iLevel
+ * @param string $iMessage
+ * @param string $iByPass
+ */
+function sp_assert($iAssertion, $iLevel = SP_FATAL, $iMessage="", $iByPass ="")
+{
+	assert($iAssertion);
 }
 
 /**
@@ -155,7 +173,7 @@ class sp_ArrayUtils
 	 * @param array $iCurrentDepthAndLevel
 	 * @param mixed $iNextArray
 	 */
-	private function compute_array_depth_cb1($iCurrentDepthAndLevel, $iNextArray)
+	private function compute_array_depth_cb1($iCurrentDepthAndLevel, &$iNextArray)
 	{
 		$iCurrentDepthAndLevel[0] = max($iCurrentDepthAndLevel[0], self::compute_array_depth($iNextArray, $iCurrentDepthAndLevel));
 		return $iCurrentDepthAndLevel; 
@@ -171,13 +189,18 @@ class sp_ArrayUtils
 	 * @param int $iRecurseLevel
 	 * @return int
 	 */
-	public static function compute_array_depth($iArray, $iCurrentDepthAndLevel = array(0,100))
+	public static function compute_array_depth(&$iArray, $iCurrentDepthAndLevel = array(0,100))
 	{
 		if(!is_array($iArray) || 0 >= $iCurrentDepthAndLevel[1]) return 0;
 		$iCurrentDepthAndLevel[0] += 1;
 		$iCurrentDepthAndLevel[1] -= 1;
 		$result = array_reduce($iArray, "sp_ArrayUtils::compute_array_depth_cb1", $iCurrentDepthAndLevel);
 		return $result[0];
+	}
+	
+	private function is_multidimensional_array(&$iArray)
+	{
+		
 	}
 	
 	/**
@@ -189,7 +212,7 @@ class sp_ArrayUtils
 	 */
 	public static function dump_array(&$iArray, $iFileName, $iSep = "\n")
 	{
-	    assert( ! is_dir($iFileName));
+	    sp_assert( ! is_dir($iFileName));
 		$fp = @fopen($iFileName,"w");	
 		foreach($iArray as $value)
 		{
@@ -261,7 +284,7 @@ class sp_ArrayUtils
 	 */
 	public static function store_array(&$iArray, $iFileName, $iDebug = false)
 	{
-		assert( ! is_dir($iFileName));
+		sp_assert( ! is_dir($iFileName));
 		file_put_contents($iFileName, "<?php \$sp_stored_array=".self::array_as_php_string($iArray, $iDebug).";?>");
 	}
 	
@@ -273,7 +296,7 @@ class sp_ArrayUtils
 	 */
 	public static function load_array($iFileName)
 	{
-		assert( file_exists($iFileName) && !is_dir($iFileName));
+		sp_assert( file_exists($iFileName) && !is_dir($iFileName));
 		include($iFileName);
 		return $sp_stored_array;
 	}
