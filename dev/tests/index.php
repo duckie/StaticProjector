@@ -27,3 +27,4 @@ RunAndPrintTest("file_reader_01", array("ref" => "file_reader_dump_01.txt","repo
 RunAndPrintTest("file_reader_02", array("ref" => "file_reader_dump_02.txt","dir" => "$data_in/repository1/images/list1"));
 RunAndPrintTest("file_reader_03", array("src" => "$data_in/repository1","dst" => "$data_out/repository1"));
 RunAndPrintTest("command_parser_01", array("ref" => "cmd_dump_01.txt","repo" => "$data_in/repository2"));
+RunAndPrintTest("utils_arrays_01", array("ref" => "utils_arrays_01.txt"));
