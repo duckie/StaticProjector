@@ -3,7 +3,7 @@
 require_once(__DIR__."/../../sp-includes/StaticProjector.php");
 require_once(__DIR__."/test.php");
 
-function RunTest($iName,$iParams)
+function RunTest($iName,$iParams = array())
 {
 	require_once(__DIR__."/".$iName.".php");
 	$class = "sp_".$iName;
@@ -12,7 +12,7 @@ function RunTest($iName,$iParams)
 	return $success;
 }
 
-function RunAndPrintTest($iName,$iParams)
+function RunAndPrintTest($iName,$iParams = array())
 {
 	echo($iName.": ");
 	$success = RunTest($iName,$iParams);
@@ -27,4 +27,4 @@ RunAndPrintTest("file_reader_01", array("ref" => "file_reader_dump_01.txt","repo
 RunAndPrintTest("file_reader_02", array("ref" => "file_reader_dump_02.txt","dir" => "$data_in/repository1/images/list1"));
 RunAndPrintTest("file_reader_03", array("src" => "$data_in/repository1","dst" => "$data_out/repository1"));
 RunAndPrintTest("command_parser_01", array("ref" => "cmd_dump_01.txt","repo" => "$data_in/repository2"));
-RunAndPrintTest("utils_arrays_01", array("ref" => "utils_arrays_01.txt"));
+RunAndPrintTest("utils_arrays_01");

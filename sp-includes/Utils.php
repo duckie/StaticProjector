@@ -202,7 +202,7 @@ class sp_ArrayUtils
 	 * For instance, the depth of array(1,array(array(1)),array(1),true,"ok") is 3.
 	 *
 	 * @param mixed $iArray An array, multidimensional or not
-	 * @param array $iRecurseLevel Max depth computable, defautl 100 (which is huge)
+	 * @param array $iRecurseLevel Max depth computable, default 100 (which is huge)
 	 * @return int 0 if not an array, depth otherwise
 	 */
 	public static function compute_array_depth(&$iArray, $iRecurseLevel = 100)
@@ -319,6 +319,19 @@ class sp_ArrayUtils
 		return $sp_stored_array;
 	}
 	
+	/**
+	 * Stores the array as readable and editable text file
+	 * 
+	 * Only supports one dimensional arrays.
+	 * If the array is sequential, the resulting file is a simple list.
+	 * If the array is associative, it is a configuration file similar to java's files. Plus,
+	 * the array keys must match the regexp "[a-zA-Z0-9_\-\.]".
+	 * 
+	 * * @see sp_ArrayUtils::load_config to get the array back
+	 * 
+	 * @param array $iArray
+	 * @param string $iFileName
+	 */
 	public static function store_config(array &$iArray, $iFileName)
 	{
 		sp_assert( (!self::is_multidimensional_array($iArray)) && (!is_dir($iFileName)) );
@@ -328,20 +341,57 @@ class sp_ArrayUtils
 		if(self::is_assoc_array($iArray))
 		{
 			foreach($iArray as $key => $value)
-				fwrite($fp,"$key=$value\n");
+			{
+				$key_ok = preg_match("#^[a-zA-Z0-9\.\-_]+$#",$key);
+				sp_assert($key_ok, SP_WARNING); 
+				if($key_ok)
+					fwrite($fp,"$key=$value\n");
+			}
 		}
 		else
 		{
 			foreach($iArray as $value)
 				fwrite($fp,"$value\n");
 		}
-		
 		fclose($fp);
 	}
 	
+	/**
+	 * Loads a config file
+	 * 
+	 * Config files can have comments (# is the comment char)
+	 * or blank lines.
+	 * 
+	 * @see sp_ArrayUtils::store_config
+	 * 
+	 * @param string $iFileName
+	 */
 	public function load_config($iFileName)
 	{
+		sp_assert(file_exists($iFileName) && ! is_dir($iFileName));
+		$lines = file($iFileName, FILE_IGNORE_NEW_LINES);
+		$result = array();
+		foreach($lines as $line)
+		{
+			$line = trim($line);
+			if( (!empty($line)) && ! preg_match("/^#/", $line))
+			{
+				$matches = array();
+				if(preg_match("#^([a-zA-Z0-9\.\-_]+)\s*=(.+)$#",$line,$matches))
+				{
+					$key = $matches[1];
+					$value = $matches[2];
+					$result[$key] = $value;
+				}
+				else
+				{
+					array_push($result, $line);
+				}
+			}
+		}
 		
+		sp_assert( !self::is_multidimensional_array($iArray) );
+		return $result;
 	}
 }
 
