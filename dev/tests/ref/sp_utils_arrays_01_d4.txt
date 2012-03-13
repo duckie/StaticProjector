@@ -1,0 +1,6 @@
+website.title= Static Projector
+website.author= Put your name
+sp.regen_cache= Auto
+sp.default_routes_dump= No
+sp.activate_log= No
+sp.debug= No
