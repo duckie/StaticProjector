@@ -11,6 +11,7 @@ class sp_StaticProjector
 {
 	private $basedir;
 	private $request;
+	private $config;
 	
 	const version = "0.1";
 	const data_dir = "data";
@@ -41,10 +42,18 @@ class sp_StaticProjector
 	{
 		$this -> basedir = $iBasedir;
 		$this -> request = $iRequest;
+		$this -> config = new sp_Config($this);
+	}
+	
+	public function get_config()
+	{
+		return $this -> config;
 	}
 	
 	public function run()
 	{
+		$this -> config -> CheckAndRestoreEnvironment();
+		
 		$cache_gen = new sp_CacheGenerator($this);
 		$cache_gen -> run();
 		

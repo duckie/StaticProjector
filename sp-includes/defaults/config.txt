@@ -8,6 +8,9 @@ website.author = Put your name
 # Yes - The cache is always rewritten
 sp.regen_cache = Auto
 
+# If activated, a file containing pre-written routes is dumpd
+sp.default_routes_dump = No
+
 # Activate logging things : set it to Yes or No
 # Useful for debugging purpose if someting is wrong
 # The log file is written in cache/log.txt
