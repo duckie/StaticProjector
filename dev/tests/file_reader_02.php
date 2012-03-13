@@ -8,11 +8,7 @@ class sp_file_reader_02 extends sp_test
 		//$reader = new FileReader($vis);
 		//$reader -> run();
 		$file_list = $vis -> get_list();
-		foreach($file_list as $file)
-		{
-			$this -> write($file."\n");
-		}
-		
+		sp_ArrayUtils::dump_array($file_list, $this -> create_ref_to_check());
 		return true;
 	}
 }

@@ -2,11 +2,11 @@
 
 class FR01_SimpleVisitor extends sp_FileReaderVisitor
 {
-	private $test = null;
+	private $fp = null;
 	
-	public function __construct($iTestObj, $iRepo)
+	public function __construct($iFPOut, $iRepo)
 	{
-		$this -> test = $iTestObj;
+		$this -> fp = $iFPOut;
 		$this -> basedir = $iRepo;
 	}
 	
@@ -20,7 +20,7 @@ class FR01_SimpleVisitor extends sp_FileReaderVisitor
 		unset($info_array["last_modified_date"]);
 		unset($info_array["exif_datetime"]);
 		
-		$this -> test -> write(json_encode($info_array)."\n");
+		fwrite($this -> fp, json_encode($info_array)."\n");
 	}
 }
 
@@ -28,8 +28,10 @@ class sp_file_reader_01 extends sp_test
 {
 	protected function private_run(array $iParameters)
 	{
-		$vis = new FR01_SimpleVisitor($this, $iParameters["repo"]);
+		$fp = fopen($this -> create_ref_to_check(),'w');
+		$vis = new FR01_SimpleVisitor($fp, $iParameters["repo"]);
 		$vis -> execute();
+		fclose($fp);
 		$status = true;
 		
 		return $status;

@@ -2,23 +2,9 @@
 
 abstract class sp_test
 {
-	private $ref_name = null;
-	private $out_name = null;
-	private $out_fp = null;
 	private $files_to_check = array();
 	
 	abstract protected function private_run(array $iParameters);
-	
-	/**
-	 * Writes in the reference file for later comparison
-	 * 
-	 * @param unknown_type $iString
-	 */
-	public function write($iString)
-	{
-		fwrite($this -> out_fp, $iString);
-	}
-	
 	
 	/**
 	 * References a new file to be checked into the reference directory
@@ -44,28 +30,14 @@ abstract class sp_test
 	public function run(array $iParameters)
 	{
 		$success = false;
-				
-		// Preparing output
-		if(array_key_exists("ref", $iParameters))
-		{
-			$check_ref = true;
-			$output_dir = __DIR__."/output";
-			$ref_dir = __DIR__."/ref";
-			if(!file_exists($output_dir))
-				mkdir($output_dir);
 
-			$this -> out_fp = fopen( $this -> create_ref_to_check($iParameters["ref"]),'w');
-		}
-		
-		$test_success = $this -> private_run($iParameters);
-		
-		$success = $test_success;
-		if($test_success)
+		$output_dir = __DIR__."/output";
+		if(!file_exists($output_dir))
+			mkdir($output_dir);
+
+		$success = $this -> private_run($iParameters);		
+		if($success)
 		{
-			if($this -> out_fp)
-				fclose($this -> out_fp);
-			
-			$success = true;
 			foreach($this -> files_to_check as $file)
 			{
 				$local_success = false;
