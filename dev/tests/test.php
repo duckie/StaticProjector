@@ -63,4 +63,9 @@ abstract class sp_test
 	{
 		return __DIR__."/output";
 	}
+	
+	public function root_dir()
+	{
+		return __DIR__."/../..";
+	}
 }
