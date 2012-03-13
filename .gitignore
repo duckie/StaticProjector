@@ -3,5 +3,6 @@
 .project
 .settings
 /cache
-/user-cache
-dev/tests/output
+/web-data
+/data
+/dev/tests/output
