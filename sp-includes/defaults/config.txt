@@ -3,8 +3,8 @@ website.title = Static Projector
 website.author = Put your name
 
 # Set it to No, Auto or Yes.
-# No - The cache is never generated. To be used when you know what youre doing (to be implemented)
-# Auto - The cache is generated when it has to be after a change in the user files (to be implemented)
+# No - The cache is never generated. To be used when you know what youre doing
+# Auto - The cache is generated when it has to be after a change in the user files
 # Yes - The cache is always rewritten
 sp.regen_cache = Auto
 

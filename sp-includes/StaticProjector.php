@@ -5,6 +5,7 @@ require_once(__DIR__."/Config.php");
 require_once(__DIR__."/FileReader.php");
 require_once(__DIR__."/CacheGenerator.php");
 require_once(__DIR__."/Commands.php");
+require_once(__DIR__."/Logger.php");
 
 
 class sp_StaticProjector
@@ -12,6 +13,7 @@ class sp_StaticProjector
 	private $basedir;
 	private $request;
 	private $config;
+	private $logger;
 	
 	const version = "0.1";
 	const data_dir = "data";
@@ -21,6 +23,7 @@ class sp_StaticProjector
 	const cache_dir = "cache";
 	const defaults_dir = "sp-includes/defaults";
 	const config_file = "config.txt";
+	const log_file = "log.txt";
 	const file_order_name = "_sp_fileorder.txt";
 	const file_metadata_ext = ".txt";
 	const file_metadata_title_field = "title";
@@ -43,6 +46,7 @@ class sp_StaticProjector
 		$this -> basedir = $iBasedir;
 		$this -> request = $iRequest;
 		$this -> config = new sp_Config($this);
+		$this -> logger = new sp_Logger($this);
 	}
 	
 	public function get_config()
@@ -64,5 +68,19 @@ class sp_StaticProjector
 	public function basedir()
 	{
 		return $this->basedir;
+	}
+	
+	/**
+	 * Logs a message if logging is activated. Do nothing otherwise
+	 * 
+	 * @param int $iLevel
+	 * @param string $iMessage
+	 */
+	public function log($iLevel, $iMessage)
+	{
+		if( sp_Config::with_log == $this -> config -> log_status() )
+		{
+			$this -> logger -> log($iLevel, $iMessage);
+		}
 	}
 }

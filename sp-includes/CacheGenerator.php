@@ -230,17 +230,17 @@ class sp_CacheGenerator
 	}
 	
 	private function update_user_cache()
-	{
+	{		
 		$user_cache = new sp_UserCacheGenerator($this->sp);
 		$user_cache -> execute();
-		
-		$sp_cache = new sp_PrivateCacheGenerator($this->sp);
-		$sp_cache -> execute();
+		$this -> sp -> log(sp_Logger::info, "Intermediate cache (".sp_StaticProjector::config_dir.") updated.");
 	}
 	
 	private function generate_cache()
 	{
-		
+		$sp_cache = new sp_PrivateCacheGenerator($this->sp);
+		$sp_cache -> execute();
+		$this -> sp -> log(sp_Logger::info, "Cache updated.");
 	}
 	
 	public function run()

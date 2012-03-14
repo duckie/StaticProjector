@@ -115,31 +115,32 @@ class sp_Config
 			$this -> log_activated = (0 == strcasecmp($config["sp.activate_log"],"Yes")) ? self::with_log : self::no_log;
 
 			$this -> config_loaded = true;
+			$this -> sp -> log(sp_Logger::info,"Config file loaded.");
 		}
 	} 
 	
 	
 	public function debug_mode()
 	{
-		LoadConfig();
+		$this -> LoadConfig();
 		return $this -> debug_mode;
 	}
 	
 	public function log_status()
 	{
-		LoadConfig();
+		$this -> LoadConfig();
 		return $this -> log_activated;
 	}
 	
 	public function cache_policy()
 	{
-		LoadConfig();
+		$this -> LoadConfig();
 		return $this -> cache_regen;
 	}
 	
 	public function get_value($iKey)
 	{
-		LoadConfig();
+		$this -> LoadConfig();
 		return $this -> config_array["website.$iKey"];
 	}
 }
