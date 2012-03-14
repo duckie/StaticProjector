@@ -377,7 +377,7 @@ class sp_ArrayUtils
 			if( (!empty($line)) && ! preg_match("/^#/", $line))
 			{
 				$matches = array();
-				if(preg_match("#^([a-zA-Z0-9\.\-_]+)\s*=(.+)$#",$line,$matches))
+				if(preg_match("#^([a-zA-Z0-9\.\-_]+)\s*=(.*)$#",$line,$matches))
 				{
 					$key = $matches[1];
 					$value = $matches[2];

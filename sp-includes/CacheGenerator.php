@@ -78,7 +78,7 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 				$cache_list = $file_list;
 			}
 
-			sp_ArrayUtils::dump_array($cache_list,$file_order_name);
+			sp_ArrayUtils::store_config($cache_list,$file_order_name);
 		//}
 		
 		// Adding route patterns
@@ -91,9 +91,8 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 	public function process(sp_FileInfo $info)
 	{
 		$cache_file = $this -> uc_dir.$info -> relative_path;
-
 		// Deleting any occurence of a directory which is now a file
-		if(file_exists($cache_file) && is_dir($cache_file))
+		if(file_exists($cache_file) && is_dir($cache_file) && ! $info -> is_dir)
 		{
 			$del = new sp_RecursiveDeleter($cache_file);
 			$del->execute();
@@ -103,24 +102,26 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 		if(!empty($info -> relative_path))
 		{
 			$meta_file = $cache_file.sp_StaticProjector::file_metadata_ext;
-			$json_data = array();
+			$data = array();
+			//$meta_file = "C:\\Documents and Settings\\jj4\\prog\\StaticProjector\\web-data\\data\\images.txt";
 			if(file_exists($meta_file))
 			{
-				$json_data = json_decode(file_get_contents($meta_file), true);
+				$data = sp_ArrayUtils::load_config($meta_file);
 			}
-			if(!array_key_exists(sp_StaticProjector::file_metadata_title_field, $json_data))
+			//$data = sp_ArrayUtils::load_config($meta_file);
+			if(!array_key_exists(sp_StaticProjector::file_metadata_title_field, $data))
 			{
-				$json_data[sp_StaticProjector::file_metadata_title_field] = $info->basename;
+				$data[sp_StaticProjector::file_metadata_title_field] = $info->basename;
 			}
 			foreach($this->meta_additional_fields as $field)
 			{
-				if(!array_key_exists($field,$json_data))
+				if(!array_key_exists($field,$data))
 				{
-					$json_data[$field]="";
+					$data[$field]="";
 				}
 			}
-			$json_string = json_encode($json_data);
-			file_put_contents($meta_file, $json_string);
+			
+			sp_ArrayUtils::store_config($data, $meta_file);
 		}
 		
 		// Default route
@@ -201,7 +202,7 @@ class sp_PrivateCacheGenerator extends sp_FileReaderVisitor
 		$info_to_store["order_index"] = array_search($info -> name, $this -> current_file_order);
 		$user_cache_file = $this -> user_cache.$info -> relative_path.sp_StaticProjector::file_metadata_ext;
 		if(! file_exists($user_cache_file)) throw new ErrorException("The metadata file $user_cache_file has not been found, check that the user cache is generated");
-		$user_cache_data = json_decode(file_get_contents($user_cache_file), true);
+		$user_cache_data = sp_ArrayUtils::load_config($user_cache_file);
 		$info_to_store = array_merge($info_to_store, $user_cache_data);
 		array_push($this -> dic_array, $info_to_store);
 	}
