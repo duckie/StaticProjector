@@ -26,5 +26,6 @@ $data_out = __DIR__."/output";
 RunAndPrintTest("file_reader_01", array("repo" => "$data_in/repository1"));
 RunAndPrintTest("file_reader_02", array("dir" => "$data_in/repository1/images/list1"));
 RunAndPrintTest("file_reader_03", array("src" => "$data_in/repository1","dst" => "$data_out/repository1"));
+RunAndPrintTest("file_utils_01");
 RunAndPrintTest("command_parser_01", array("repo" => "$data_in/repository2"));
 RunAndPrintTest("utils_arrays_01");
