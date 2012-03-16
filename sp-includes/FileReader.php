@@ -160,6 +160,46 @@ class sp_FileReader
 		$this -> visitor = $iVisitor;
 	}
 	
+	/**
+	 * Get the most recent timestamp of all the directories contained into the given one
+	 * 
+	 * This function cound have been writtent with the generic file reader system
+	 * (as for the recursive deleter for instance) but is independant to get the best
+	 * performances, since it is heavily used when the cache generation is set
+	 * to "auto"
+	 * 
+	 * @param string $iDirectory Path to the directory
+	 * @param int $iRecurseLevel Recursion limit, default 100
+	 * @param int $start Minimal timestamp : internal, not meant to be used
+	 * @return int Timestamp
+	 */
+	static public function get_directory_last_modified($iDirectory, $iRecurseLevel = 100, $start = 0)
+	{
+		if(0 == $iRecurseLevel) return 0;
+		$start = filemtime($iDirectory);
+		if(is_dir($iDirectory))
+		{
+			$dp = opendir($iDirectory);
+			readdir($dp); // "."
+			readdir($dp); // '.."
+			while($elem = readdir($dp))
+			{
+				$next = self::get_directory_last_modified("$iDirectory/$elem",$iRecurseLevel-1,$start);
+				if($start < $next) $start = $next;
+			}
+			closedir($dp);
+		}
+		
+		return $start;
+	}
+	
+	/**
+	 * Extracts some info about a file
+	 * 
+	 * 
+	 * @param string $path
+	 * @param bool $details Activate advanced info (currently: exif data)
+	 */
 	static public function get_file_info($path, $details = false)
 	{
 		if(!file_exists($path))
