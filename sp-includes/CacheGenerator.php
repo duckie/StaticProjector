@@ -37,7 +37,7 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 		}
 
 		// Handling file order lists update
-		//{
+		//{ // In fact PHP does not support anonymous blocks, lol
 			$local_vis = new sp_SimpleDirectoryContentList($info -> absolute_path);
 			$file_list = $local_vis -> get_list();
 			$cache_list = array();
@@ -79,7 +79,7 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 			}
 
 			sp_ArrayUtils::store_config($cache_list,$file_order_name);
-		//}
+		//} // lol
 		
 		// Adding route patterns
 		if(empty($info -> relative_path))
@@ -224,10 +224,20 @@ class sp_PrivateCacheGenerator extends sp_FileReaderVisitor
 class sp_CacheGenerator 
 {
 	private $sp;
+	private $data_stamp = 0;
+	private $uc_stamp = 0;
+	private $cache_stamp = 0;
 	
 	public function __construct(sp_StaticProjector $iSP)
 	{
 		$this -> sp = $iSP;
+	}
+	
+	public function check_current_filesystem_state()
+	{
+		$this -> data_stamp = sp_FileReader::get_directory_last_modified($this -> sp -> basedir()."/".sp_StaticProjector::data_dir);
+		$this -> uc_stamp = sp_FileReader::get_directory_last_modified($this -> sp -> basedir()."/".sp_StaticProjector::user_cache_dir);
+		$this -> cache_stamp = sp_FileReader::get_directory_last_modified($this -> sp -> basedir()."/".sp_StaticProjector::cache_dir);
 	}
 	
 	private function update_user_cache()
@@ -246,7 +256,16 @@ class sp_CacheGenerator
 	
 	public function run()
 	{
-		$this -> update_user_cache();
-		$this -> generate_cache();
+		$cache_gen_policy = $this -> sp -> get_config() -> cache_policy();
+		if(sp_Config::cache_no_regen != $cache_gen_policy)
+		{
+			$update_user_cache = ($this -> uc_stamp <= $this -> data_stamp);
+
+			if($update_user_cache || sp_Config::cache_force_regen == $cache_gen_policy)
+				$this -> update_user_cache();
+
+			if( ($update_user_cache || $this -> cache_stamp <= $this -> uc_stamp) || sp_Config::cache_force_regen == $cache_gen_policy)
+				$this -> generate_cache();
+		}
 	}
 }

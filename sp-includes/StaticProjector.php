@@ -56,13 +56,23 @@ class sp_StaticProjector
 	
 	public function run()
 	{
+		// This function initializes everything at installation, does nothing otherwise
 		$this -> config -> CheckAndRestoreEnvironment();
 		
+		// First thing to do before modifying anything : computing timestamp
+		// Must be done before any call to log() cause log() may modify this state
 		$cache_gen = new sp_CacheGenerator($this);
+		$cache_gen -> check_current_filesystem_state();
+
+		$this -> log(sp_Logger::info,"Static Projector execution began.");
+		
+		// Generating the caches
 		$cache_gen -> run();
 		
 		$commands = new sp_Commands($this);
 		$commands -> parse_request($this -> request);
+		
+		$this -> log(sp_Logger::info,"Static Projector execution ended.");
 	}
 	
 	public function basedir()
