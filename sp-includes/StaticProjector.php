@@ -31,7 +31,8 @@ class sp_StaticProjector
 	const dic_file = "db.dico";
 	const routes_file = "routes.txt";
 	const routes_default_file = "routes.default.txt";
-	
+	const routes_dico = "routes.dico";
+
 	/**
 	 * StaticProjector constructor
 	 * 
@@ -69,8 +70,7 @@ class sp_StaticProjector
 		// Generating the caches
 		$cache_gen -> run();
 		
-		$commands = new sp_Commands($this);
-		$commands -> parse_request($this -> request);
+
 		
 		$this -> log(sp_Logger::info,"Static Projector execution ended.");
 	}

@@ -165,6 +165,7 @@ class sp_PrivateCacheGenerator extends sp_FileReaderVisitor
 	private $current_file_order = null;
 
 	private $meta_additional_fields;
+	private $debug = false;
 
 	public function __construct(sp_StaticProjector $iSP)
 	{
@@ -209,6 +210,8 @@ class sp_PrivateCacheGenerator extends sp_FileReaderVisitor
 	
 	public function execute()
 	{
+		$this -> debug = (sp_Config::debug == $this -> sp -> get_config() -> debug_mode());
+		
 		if( ! file_exists($this -> cache_dir))
 		{
 			@mkdir($this -> cache_dir, null, true);
@@ -216,7 +219,19 @@ class sp_PrivateCacheGenerator extends sp_FileReaderVisitor
 		}
 		sp_assert(is_dir($this -> cache_dir));
 		parent::execute();
-		sp_ArrayUtils::store_array($this -> dic_array, $this -> dic_file);
+		sp_ArrayUtils::store_array($this -> dic_array, $this -> dic_file, $this -> debug);
+				
+		// Parsing routes
+		$routes_data = array();
+	    $routes = file($this -> sp -> basedir()."/".sp_StaticProjector::config_dir."/".sp_StaticProjector::routes_file, FILE_IGNORE_NEW_LINES);
+		foreach ($routes as $route_pattern)
+		{
+			if(preg_match("#^([^>\s]+)\s*->\s*([a-zA-Z0-9_\-]+)\s*\(([^\s]*)\)\s*$#",$route_pattern,$matches))
+			{
+				array_push($routes_data, array("route" => $matches[1], "template" => $matches[2], "replace_pattern" => $matches[3]));
+			}
+		}
+		sp_ArrayUtils::store_array($routes_data, $this -> sp -> basedir()."/".sp_StaticProjector::cache_dir."/".sp_StaticProjector::routes_dico, $this -> debug);
 	}
 }
 
