@@ -6,6 +6,10 @@ require_once(__DIR__."/FileReader.php");
 require_once(__DIR__."/CacheGenerator.php");
 require_once(__DIR__."/Commands.php");
 require_once(__DIR__."/Logger.php");
+require_once(__DIR__."/StaticRegister.php");
+require_once(__DIR__."/Templates.php");
+require_once(__DIR__."/templates/base_controller.php");
+require_once(__DIR__."/templates/base_template.php");
 
 
 class sp_StaticProjector
@@ -27,7 +31,7 @@ class sp_StaticProjector
 	const file_order_name = "_sp_fileorder.txt";
 	const file_metadata_ext = ".txt";
 	const file_metadata_title_field = "title";
-	const file_metadata_additional_fields = "template;link;alt;comment";
+	const file_metadata_additional_fields = "link;alt;comment";
 	const dic_file = "db.dico";
 	const routes_file = "routes.txt";
 	const routes_default_file = "routes.default.txt";
@@ -48,6 +52,7 @@ class sp_StaticProjector
 		$this -> request = $iRequest;
 		$this -> config = new sp_Config($this);
 		$this -> logger = new sp_Logger($this);
+	
 	}
 	
 	public function get_config()
@@ -57,6 +62,8 @@ class sp_StaticProjector
 	
 	public function run()
 	{
+		set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__. PATH_SEPARATOR . __DIR__."/templates");
+		
 		// This function initializes everything at installation, does nothing otherwise
 		$this -> config -> CheckAndRestoreEnvironment();
 		
@@ -72,9 +79,21 @@ class sp_StaticProjector
 		
 		// Rendeing
 		$commands = new sp_Commands($this);
-		$result = $commands -> execute_request($this -> request);
-		if( ! $result)
+		$success = $commands -> execute_request($this -> request);
+		if($success)
+		{
+			$template = $commands -> get_template();
+			$renderer = new sp_Template($this, $template);
+			
+			sp_StaticRegister::push_object("sp", $this);
+			$data = $renderer -> render($commands -> get_command_data());
+			sp_StaticRegister::pop_object("sp");			
+		}
+		else
+		{
 			$this -> log(sp_Logger::error, "No route found for ".$this -> request.".");
+		}
+		
 		
 		$this -> log(sp_Logger::info,"Static Projector execution ended.");
 	}
