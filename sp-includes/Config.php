@@ -16,6 +16,7 @@ class sp_Config
 	private $cache_regen;
 	private $debug_mode;
 	private $log_activated;
+	private $default_routes_activated;
 	
 	const cache_no_regen = 0;
 	const cache_auto_regen = 1;
@@ -26,6 +27,9 @@ class sp_Config
 	
 	const no_log = 0;
 	const with_log = 1;
+	
+	const no_default_routes = 0;
+	const default_routes = 1;
 	
 	public function __construct(sp_StaticProjector $sp)
 	{
@@ -113,6 +117,7 @@ class sp_Config
 			
 			$this -> debug_mode = (0 == strcasecmp($config["sp.debug"], "Yes")) ? self::debug : self::no_debug;
 			$this -> log_activated = (0 == strcasecmp($config["sp.activate_log"],"Yes")) ? self::with_log : self::no_log;
+			$this -> default_routes_activated = (0 == strcasecmp($config["sp.default_routes_dump"],"Yes")) ? self::default_routes : self::no_default_routes;
 
 			$this -> config_loaded = true;
 			$this -> sp -> log(sp_Logger::info,"Config file loaded.");
@@ -136,6 +141,12 @@ class sp_Config
 	{
 		$this -> LoadConfig();
 		return $this -> cache_regen;
+	}
+	
+	public function default_routes_policy()
+	{
+		$this -> LoadConfig();
+		return $this -> default_routes_activated;
 	}
 	
 	public function get_value($iKey)

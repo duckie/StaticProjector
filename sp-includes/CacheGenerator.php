@@ -144,7 +144,9 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 			{
 				touch($route_file);
 			}
-			sp_ArrayUtils::dump_array($this -> routes, $this -> cache_dir."/".sp_StaticProjector::routes_default_file);
+			if($this->sp->get_config()->default_routes_policy())
+				sp_ArrayUtils::dump_array($this -> routes, $this -> cache_dir."/".sp_StaticProjector::routes_default_file);
+			
 			sp_set_http_granting($this -> conf_dir, SP_HTTP_DENY_ACCESS);
 			sp_set_http_granting($this -> uc_dir, SP_HTTP_DENY_ACCESS);
 		}
