@@ -11,7 +11,7 @@ public function main($iData) { ?>
 <body>
 <div id="header">
 	<div id="banner"><?php sp_insert_chunk("banner", $iData);?></div>
-	<div id="menu"><?php sp_insert_chunk("menu", $iData);?></div>
+	<div id="menu"><?php sp_insert_chunk("menu", $iData["menu"]);?></div>
 </div>
 
 <div id="content"><?php sp_insert_chunk("content", $iData);?></div>
@@ -41,7 +41,7 @@ public function banner($iData) { ?> <!--  Empty --> <?php }
 /**** MENU ****/
 public function menu($iData)
 {
-	$menu_data = array();
+	$menu_data = $iData;
 	$menu_file = sp_get_resource_path("menu.txt");
 	if(file_exists($menu_file))
 	{
