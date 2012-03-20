@@ -80,8 +80,26 @@ function sp_config_value($iKey)
 	return $sp -> get_config() -> get_value($iKey);
 }
 
+function sp_get_resource_path($iPartialPath)
+{
+	$sp = sp_StaticRegister::get_object("sp");
+	return $sp -> resources() -> get_resource_path($iPartialPath);
+}
+
 function sp_markdown($iText)
 {
 	return Markdown($iText);
+}
+
+function sp_resource_url($iRequest)
+{
+	$sp = sp_StaticRegister::get_object("sp");
+	return $sp -> baseurl().sp_filter_path($iRequest);	
+}
+
+function sp_url($iRequest)
+{
+	$sp = sp_StaticRegister::get_object("sp");
+	return $sp -> baseurl()."/index.php".sp_filter_path($iRequest);
 }
 

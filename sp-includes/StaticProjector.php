@@ -15,6 +15,7 @@ require_once(__DIR__."/templates/base_template.php");
 class sp_StaticProjector
 {
 	private $basedir;
+	private $baseurl;
 	private $request;
 	private $config;
 	private $logger;
@@ -49,9 +50,10 @@ class sp_StaticProjector
 	 * @param string $iBasedir
 	 * @param string $iRequest
 	 */
-	public function __construct($iBasedir, $iRequest)
+	public function __construct($iBasedir, $iBaseUrl, $iRequest)
 	{
 		$this -> basedir = $iBasedir;
+		$this -> baseurl = $iBaseUrl;
 		$this -> request = $iRequest;
 		$this -> config = new sp_Config($this);
 		$this -> logger = new sp_Logger($this);
@@ -68,12 +70,16 @@ class sp_StaticProjector
 		return $this -> resources;
 	}
 	
+	public function baseurl()
+	{
+		return $this -> baseurl;
+	}
+	
 	public function run()
 	{
-		set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__. PATH_SEPARATOR . __DIR__."/templates");
-		
 		// This function initializes everything at installation, does nothing otherwise
 		$this -> config -> CheckAndRestoreEnvironment();
+		set_include_path(get_include_path() . PATH_SEPARATOR . $this->basedir()."/".self::templates_dir);
 		
 		// First thing to do before modifying anything : computing timestamp
 		// Must be done before any call to log() cause log() may modify this state
