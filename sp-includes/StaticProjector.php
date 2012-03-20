@@ -70,7 +70,11 @@ class sp_StaticProjector
 		// Generating the caches
 		$cache_gen -> run();
 		
-
+		// Rendeing
+		$commands = new sp_Commands($this);
+		$result = $commands -> execute_request($this -> request);
+		if( ! $result)
+			$this -> log(sp_Logger::error, "No route found for ".$this -> request.".");
 		
 		$this -> log(sp_Logger::info,"Static Projector execution ended.");
 	}

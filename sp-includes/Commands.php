@@ -12,7 +12,7 @@ class sp_Commands
 		$this -> sp = $iSp;
 	}
 	
-	public function parse_request($iRequest)
+	public function execute_request($iRequest)
 	{
 		$this -> success = false;
 		$this -> route_data = null;
@@ -22,26 +22,26 @@ class sp_Commands
 		$request = preg_replace("#^/*([^/]*)((/[^/]+)*)(/*)$#", "/$1$2", $iRequest);
 		if(empty($request)) $request = "/";
 		
-		$routes = file($this -> sp -> basedir()."/".sp_StaticProjector::config_dir."/".sp_StaticProjector::routes_file, FILE_IGNORE_NEW_LINES);
-		foreach ($routes as $route_pattern)
+		$routes = sp_ArrayUtils::load_array($this -> sp -> basedir()."/".sp_StaticProjector::cache_dir."/".sp_StaticProjector::routes_dico);
+		foreach ($routes as $route_data)
 		{
-			if(preg_match("#^([^>\s]+)\s*->\s*([a-zA-Z0-9_\-]+)\s*\(([^\s]*)\)\s*$#",$route_pattern,$matches))
+			$route = $route_data["route"];
+			$template = $route_data["template"];
+			$replace_pattern = $route_data["replace_pattern"];
+			
+			$matches = array();
+
+			if(preg_match("#^$route$#",$request,$matches))
 			{
-				$route = $matches[1];
-				$template = $matches[2];
-				$replace_pattern = $matches[3];
-				
-				if(preg_match("#^$route$#",$request,$matches))
-				{
-					if(!empty($replace_pattern))
-						$matches[0] = preg_replace("#^$route$#",$replace_pattern,$request);
+				if(!empty($replace_pattern))
+					$matches[0] = preg_replace("#^$route$#",$replace_pattern,$request);
 					
-					$this -> success = true;
-					$this -> template_name = $template;
-					$this -> route_data = $matches;
-					break;
-				}
+				$this -> success = true;
+				$this -> template_name = $template;
+				$this -> route_data = $matches;
+				break;
 			}
+				
 		}
 		
 		return $this -> succeeded();
