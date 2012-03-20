@@ -41,13 +41,10 @@ public function banner($iData) { ?> <!--  Empty --> <?php }
 /**** MENU ****/
 public function menu($iData)
 {
-	$menu_data = $iData;
-	$menu_file = sp_get_resource_path("menu.txt");
-	if(file_exists($menu_file))
+	if(null != $iData)
 	{
-		$menu_data = sp_ArrayUtils::parse_menu($menu_file);
 		echo("\n<ul id=\"nav\">\n");
-		$this -> print_menu($menu_data);
+		$this -> print_menu($iData);
 		echo("</ul>\n");
 	}
 }

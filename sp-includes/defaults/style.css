@@ -41,7 +41,7 @@ a {
 	text-decoration: none;
 	display: block;
 	padding:  8px 20px;
-	margin: 0;
+	margin-bottom:2px;
 	-webkit-border-radius: 1.6em;
 	-moz-border-radius: 1.6em;
 	text-shadow: 0 1px 1px rgba(0, 0, 0, .3);
@@ -55,6 +55,7 @@ a {
 
 	color: #444;
 	border-top: solid 1px #f8f8f8;
+	margin-bottom:0;
 	-webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .2);
 	-moz-box-shadow: 0 1px 1px rgba(0, 0, 0, .2);
 	box-shadow: 0 1px 1px rgba(0, 0, 0, .2);

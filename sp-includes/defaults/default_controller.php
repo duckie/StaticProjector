@@ -15,6 +15,8 @@ class default_controller extends sp_base_controller
 		{
 			$menu_data = sp_ArrayUtils::parse_menu($menu_file);
 		}
+		
+		return $menu_data;
 	}
 	
 	public function execute($iData)

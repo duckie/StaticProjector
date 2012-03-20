@@ -44,7 +44,8 @@ function sp_set_http_granting($iDirectoryName, $iGrant)
  */
 function sp_filter_path($iPath)
 {
-	$request = preg_replace("#^/*([^/]*)((/[^/]+)*)(/*)$#", "/$1$2", $iPath);
+	$request = preg_replace("#^/*([^/](.*))?$#", "/$1", $iPath);
+	$request = preg_replace("#^((.*)[^/])?/*$#", "$1", $request);
 	if(empty($request)) $request = "/";
 	return $request;
 }
@@ -403,15 +404,15 @@ class sp_ArrayUtils
 	/**
 	 * Parses a config file and creates an array usable for a drop-down menu
 	 * 
-	 * The syntax follows the pattern "item = ItemName : LinkToGo"
+	 * The syntax follows the pattern "item = ItemName ; LinkToGo"
 	 * The max depth of the menu is 3.
 	 * 
 	 * Example:
-	 * menu = Home : /
+	 * menu = Home ; /
 	 * tab1 = Tab title 1
-	 * tab1.page1 = My Page 1 : /go/to/page1
-	 * tab1.page2 = My Page 2 : /go/to/page2
-	 * tab1.page2.subitem = My sub item : /go/to/page2/subitem
+	 * tab1.page1 = My Page 1 ; /go/to/page1
+	 * tab1.page2 = My Page 2 ; /go/to/page2
+	 * tab1.page2.subitem = My sub item ; /go/to/page2/subitem
 	 * 
 	 * @param string $iFileName Path the file which has to be parse
 	 */
@@ -422,7 +423,7 @@ class sp_ArrayUtils
 		foreach($base_array as $key => $value)
 		{
 			$key_path = explode('.', $key);
-			$attributes = explode(':',$value);
+			$attributes = explode(';',$value);
 			$item_name = $attributes[0];
 			$item_link = "";
 			if(1 < count($attributes))

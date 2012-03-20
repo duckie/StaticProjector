@@ -4,3 +4,4 @@ sp.regen_cache= Auto
 sp.default_routes_dump= No
 sp.activate_log= No
 sp.debug= No
+sp.override_chunks= content

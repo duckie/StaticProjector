@@ -18,3 +18,8 @@ sp.activate_log = No
 
 # Debug mode - Some of the internal data are generated in another format. For developers
 sp.debug = No
+
+# Template engine - List of the chunks to be overrided by default 
+# when a template is created
+# List separated by a ;
+sp.override_chunks = content
