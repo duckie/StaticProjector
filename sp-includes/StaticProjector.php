@@ -6,11 +6,11 @@ require_once(__DIR__."/FileReader.php");
 require_once(__DIR__."/CacheGenerator.php");
 require_once(__DIR__."/Commands.php");
 require_once(__DIR__."/Logger.php");
+require_once(__DIR__."/Resources.php");
 require_once(__DIR__."/StaticRegister.php");
 require_once(__DIR__."/Templates.php");
 require_once(__DIR__."/templates/base_controller.php");
 require_once(__DIR__."/templates/base_template.php");
-
 
 class sp_StaticProjector
 {
@@ -18,6 +18,7 @@ class sp_StaticProjector
 	private $request;
 	private $config;
 	private $logger;
+	private $resources;
 	
 	const version = "0.1";
 	const data_dir = "data";
@@ -54,12 +55,17 @@ class sp_StaticProjector
 		$this -> request = $iRequest;
 		$this -> config = new sp_Config($this);
 		$this -> logger = new sp_Logger($this);
-	
+		$this -> resources = new sp_ResourceBrowser($this);
 	}
 	
 	public function get_config()
 	{
 		return $this -> config;
+	}
+	
+	public function resources()
+	{
+		return $this -> resources;
 	}
 	
 	public function run()

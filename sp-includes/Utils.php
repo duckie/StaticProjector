@@ -1,6 +1,6 @@
 <?php
 /**
- * @package Utilities
+ * @package Utils
  * @author Jean-Bernard Jansen
  * 
  * This file contains utility functions and classes which are usable 
@@ -36,20 +36,26 @@ function sp_set_http_granting($iDirectoryName, $iGrant)
 		file_put_contents("$iDirectoryName/.htaccess", "deny from all\n");
 }
 
-define("SP_INFO",0);
-define("SP_WARNING",1);
-define("SP_ERROR",2);
-define("SP_FATAL",3);
+/**
+ * Add "/" at the beginning of the path if missing and delete "/" at the end
+ * 
+ * @param string $iPath
+ * @return string 
+ */
+function sp_filter_path($iPath)
+{
+	$request = preg_replace("#^/*([^/]*)((/[^/]+)*)(/*)$#", "/$1$2", $iPath);
+	if(empty($request)) $request = "/";
+	return $request;
+}
 
 /**
  * Assertion which can also be an error.
  * 
  * @param bool $iAssertion
- * @param int $iLevel
  * @param string $iMessage
- * @param string $iByPass
  */
-function sp_assert($iAssertion, $iLevel = SP_FATAL, $iMessage="", $iByPass ="")
+function sp_assert($iAssertion, $iMessage="")
 {
 	assert($iAssertion);
 }
@@ -343,7 +349,7 @@ class sp_ArrayUtils
 			foreach($iArray as $key => $value)
 			{
 				$key_ok = preg_match("#^[a-zA-Z0-9\.\-_]+$#",$key);
-				sp_assert($key_ok, SP_WARNING); 
+				sp_assert($key_ok);
 				if($key_ok)
 					fwrite($fp,"$key=$value\n");
 			}
@@ -377,7 +383,7 @@ class sp_ArrayUtils
 			if( (!empty($line)) && ! preg_match("/^#/", $line))
 			{
 				$matches = array();
-				if(preg_match("#^([a-zA-Z0-9\.\-_]+)\s*=(.*)$#",$line,$matches))
+				if(preg_match("#^\s*([a-zA-Z0-9\.\-_]+)\s*=(.*)$#",$line,$matches))
 				{
 					$key = $matches[1];
 					$value = $matches[2];
@@ -392,6 +398,56 @@ class sp_ArrayUtils
 		
 		sp_assert( !self::is_multidimensional_array($iArray) );
 		return $result;
+	}
+	
+	/**
+	 * Parses a config file and creates an array usable for a drop-down menu
+	 * 
+	 * The syntax follows the pattern "item = ItemName : LinkToGo"
+	 * The max depth of the menu is 3.
+	 * 
+	 * Example:
+	 * menu = Home : /
+	 * tab1 = Tab title 1
+	 * tab1.page1 = My Page 1 : /go/to/page1
+	 * tab1.page2 = My Page 2 : /go/to/page2
+	 * tab1.page2.subitem = My sub item : /go/to/page2/subitem
+	 * 
+	 * @param string $iFileName Path the file which has to be parse
+	 */
+	public function parse_menu($iFileName)
+	{
+		$base_array = self::load_config($iFileName);
+		$menu = array();
+		foreach($base_array as $key => $value)
+		{
+			$key_path = explode('.', $key);
+			$attributes = explode(':',$value);
+			$item_name = $attributes[0];
+			$item_link = "";
+			if(1 < count($attributes))
+				$item_link = $attributes[1];
+			
+			$path_size = count($key_path);
+			$current_tab = &$menu;
+			for($index = 0; $index < $path_size; $index++)
+			{
+				$current_key = $key_path[$index];
+				if( ! key_exists($current_key, $current_tab))
+					$current_tab[$current_key] = array("name"=>$current_key,"link" => "", "children" => array());
+				
+				if($path_size - 1 == $index)
+				{
+					$current_tab[$current_key]["name"] = $item_name;
+					$current_tab[$current_key]["link"] = $item_link;
+				}
+				else
+				{
+					$current_tab = &$current_tab[$current_key]["children"];
+				}
+			}
+		}
+		return $menu;
 	}
 }
 

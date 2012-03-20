@@ -19,8 +19,10 @@ class sp_Commands
 		$this -> template_name = null;
 		
 		// Remodeling the request : add "/" to the beginning if missing and delete "/" at the end if so
-		$request = preg_replace("#^/*([^/]*)((/[^/]+)*)(/*)$#", "/$1$2", $iRequest);
-		if(empty($request)) $request = "/";
+		$request = sp_filter_path($iRequest);
+		
+		//preg_replace("#^/*([^/]*)((/[^/]+)*)(/*)$#", "/$1$2", $iRequest);
+		//if(empty($request)) $request = "/";
 		
 		$routes = sp_ArrayUtils::load_array($this -> sp -> basedir()."/".sp_StaticProjector::cache_dir."/".sp_StaticProjector::routes_dico);
 		foreach ($routes as $route_data)
