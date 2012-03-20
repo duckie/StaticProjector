@@ -1,5 +1,7 @@
 <?php 
 
+require_once(__DIR__."/third-party/php-markdown/markdown.php");
+
 class sp_Template
 {
 	private $sp;
@@ -80,6 +82,6 @@ function sp_config_value($iKey)
 
 function sp_markdown($iText)
 {
-	return $iText;
+	return Markdown($iText);
 }
 

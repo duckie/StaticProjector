@@ -58,7 +58,7 @@ class sp_Config
 	 * @param string $iSrc
 	 * @param string $iDest
 	 */
-	private function copy_default_dile($iSrc, $iDest)
+	private function copy_default_file($iSrc, $iDest)
 	{
 		sp_assert(file_exists($iSrc));
 		
@@ -90,11 +90,18 @@ class sp_Config
 			$this -> mkdir($this->sp->basedir()."/".sp_StaticProjector::config_dir);
 			$this -> mkdir($this->sp->basedir()."/".sp_StaticProjector::user_cache_dir);
 			$this -> mkdir($this->sp->basedir()."/".sp_StaticProjector::templates_dir);
+			$this -> mkdir($this->sp->basedir()."/".sp_StaticProjector::style_dir);
 			$this -> mkdir($this->sp->basedir()."/".sp_StaticProjector::cache_dir);
 
 			$default_config = $this->sp->basedir()."/".sp_StaticProjector::defaults_dir."/".sp_StaticProjector::config_file;
 			$dest_config = $this->sp->basedir()."/".sp_StaticProjector::config_dir."/".sp_StaticProjector::config_file;
-			$this -> copy_default_dile($default_config, $dest_config);
+			$this -> copy_default_file($default_config, $dest_config);
+			
+			$default_css = $this->sp->basedir()."/".sp_StaticProjector::defaults_dir."/".sp_StaticProjector::style_file;
+			$dest_css = $this->sp->basedir()."/".sp_StaticProjector::style_dir."/".sp_StaticProjector::style_file;
+			$this -> copy_default_file($default_css, $dest_css);
+			
+			sp_set_http_granting($this->sp->basedir()."/".sp_StaticProjector::style_dir, SP_HTTP_DENY_LISTING);
 
 			$this -> env_checked = true;
 		}

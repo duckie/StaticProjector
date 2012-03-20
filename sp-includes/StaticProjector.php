@@ -24,6 +24,8 @@ class sp_StaticProjector
 	const user_cache_dir = "web-data/data";
 	const config_dir = "web-data";
 	const templates_dir = "web-data/templates";
+	const style_dir = "web-data/styles";
+	const style_file = "style.css";
 	const cache_dir = "cache";
 	const defaults_dir = "sp-includes/defaults";
 	const config_file = "config.txt";

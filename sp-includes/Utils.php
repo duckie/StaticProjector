@@ -29,9 +29,9 @@ function sp_set_http_granting($iDirectoryName, $iGrant)
 	if(SP_HTTP_NO_RULE == $iGrant)
 		file_put_contents("$iDirectoryName/.htaccess", "");
 	else if(SP_HTTP_ALLOW_ACCESS == $iGrant)
-		file_put_contents("$iDirectoryName/.htaccess", "Options +Indexes\n");
+		file_put_contents("$iDirectoryName/.htaccess", "allow from all\nOptions +Indexes\n");
 	else if(SP_HTTP_DENY_LISTING == $iGrant)
-		file_put_contents("$iDirectoryName/.htaccess", "Options -Indexes\n");
+		file_put_contents("$iDirectoryName/.htaccess", "allow from all\nOptions -Indexes\n");
 	else if(SP_HTTP_DENY_ACCESS == $iGrant)
 		file_put_contents("$iDirectoryName/.htaccess", "deny from all\n");
 }
