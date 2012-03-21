@@ -21,5 +21,14 @@ abstract class sp_base_controller
 		return $this -> name;
 	}
 	
+	protected function gather_common_datas(array &$iArrayToStore)
+	{
+		$menu_file = sp_get_resource_path("menu.txt");
+		if(file_exists($menu_file))
+		{
+			$iArrayToStore["menu"] = sp_ArrayUtils::parse_menu($menu_file);
+		}
+	}
+	
 	abstract public function execute($iData);
 }

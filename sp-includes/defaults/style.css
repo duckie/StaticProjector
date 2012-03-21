@@ -1,10 +1,14 @@
 body {
 	font: normal .8em/1.5em Arial, Helvetica, sans-serif;
 	background: #ebebeb;
-	width: 900px;
-	margin: 100px auto;
 	color: #666;
 }
+
+#body {
+	width: 900px;
+	margin: 100px auto;
+}
+
 a {
 	color: #333;
 }
@@ -13,6 +17,7 @@ a {
 	padding: 7px 6px 0;
 	line-height: 100%;
 	border-radius: 2em;
+	width:100%;
 
 	-webkit-border-radius: 2em;
 	-moz-border-radius: 2em;

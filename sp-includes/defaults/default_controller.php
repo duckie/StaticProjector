@@ -7,24 +7,12 @@ class default_controller extends sp_base_controller
 		parent::__construct($iSP, $iName);
 	}
 	
-	public function get_menu()
-	{
-		$menu_data = null;
-		$menu_file = sp_get_resource_path("menu.txt");
-		if(file_exists($menu_file))
-		{
-			$menu_data = sp_ArrayUtils::parse_menu($menu_file);
-		}
-		
-		return $menu_data;
-	}
-	
 	public function execute($iData)
 	{
 		$datas = array();
 		
 		// Adding the menu
-		$datas["menu"] = $this -> get_menu();
+		$this -> gather_common_datas($datas);
 		
 		// Adding the content
 		$resource = $iData[0];
