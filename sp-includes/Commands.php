@@ -24,7 +24,7 @@ class sp_Commands
 		//preg_replace("#^/*([^/]*)((/[^/]+)*)(/*)$#", "/$1$2", $iRequest);
 		//if(empty($request)) $request = "/";
 		
-		$routes = sp_ArrayUtils::load_array($this -> sp -> basedir()."/".sp_StaticProjector::cache_dir."/".sp_StaticProjector::routes_dico);
+		$routes = sp_ArrayUtils::load_array($this -> sp -> targetdir()."/".sp_StaticProjector::cache_dir."/".sp_StaticProjector::routes_dico);
 		foreach ($routes as $route_data)
 		{
 			$route = $route_data["route"];

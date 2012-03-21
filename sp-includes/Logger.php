@@ -52,7 +52,7 @@ class sp_Logger
 		sp_assert(0 <= $iLevel && $iLevel < 5 && ! empty($iMessage));
 		if(! $this -> fp)
 		{
-			$this -> fp = fopen($this -> sp -> basedir()."/".sp_StaticProjector::cache_dir."/".sp_StaticProjector::log_file,'w');
+			$this -> fp = fopen($this -> sp -> targetdir()."/".sp_StaticProjector::cache_dir."/".sp_StaticProjector::log_file,'w');
 			sp_assert($this -> fp);
 		}
 		fwrite($this -> fp, $this->tag_mapper[$iLevel].$iMessage."\n");

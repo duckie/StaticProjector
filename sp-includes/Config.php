@@ -88,21 +88,21 @@ class sp_Config
 	{
 		if( ! $this -> env_checked)
 		{
-			$this -> mkdir($this->sp->basedir()."/".sp_StaticProjector::config_dir);
-			$this -> mkdir($this->sp->basedir()."/".sp_StaticProjector::user_cache_dir);
-			$this -> mkdir($this->sp->basedir()."/".sp_StaticProjector::templates_dir);
-			$this -> mkdir($this->sp->basedir()."/".sp_StaticProjector::style_dir);
-			$this -> mkdir($this->sp->basedir()."/".sp_StaticProjector::cache_dir);
+			$this -> mkdir($this->sp->targetdir()."/".sp_StaticProjector::config_dir);
+			$this -> mkdir($this->sp->targetdir()."/".sp_StaticProjector::user_cache_dir);
+			$this -> mkdir($this->sp->targetdir()."/".sp_StaticProjector::templates_dir);
+			$this -> mkdir($this->sp->targetdir()."/".sp_StaticProjector::style_dir);
+			$this -> mkdir($this->sp->targetdir()."/".sp_StaticProjector::cache_dir);
 
-			$default_config = $this->sp->basedir()."/".sp_StaticProjector::defaults_dir."/".sp_StaticProjector::config_file;
-			$dest_config = $this->sp->basedir()."/".sp_StaticProjector::config_dir."/".sp_StaticProjector::config_file;
+			$default_config = $this -> sp -> defaultsdir()."/".sp_StaticProjector::config_file;
+			$dest_config = $this->sp->targetdir()."/".sp_StaticProjector::config_dir."/".sp_StaticProjector::config_file;
 			$this -> copy_default_file($default_config, $dest_config);
 			
-			$default_css = $this->sp->basedir()."/".sp_StaticProjector::defaults_dir."/".sp_StaticProjector::style_file;
-			$dest_css = $this->sp->basedir()."/".sp_StaticProjector::style_dir."/".sp_StaticProjector::style_file;
+			$default_css = $this -> sp -> defaultsdir()."/".sp_StaticProjector::style_file;
+			$dest_css = $this->sp->targetdir()."/".sp_StaticProjector::style_dir."/".sp_StaticProjector::style_file;
 			$this -> copy_default_file($default_css, $dest_css);
 			
-			sp_set_http_granting($this->sp->basedir()."/".sp_StaticProjector::style_dir, SP_HTTP_DENY_LISTING);
+			sp_set_http_granting($this->sp->targetdir()."/".sp_StaticProjector::style_dir, SP_HTTP_DENY_LISTING);
 
 			$this -> env_checked = true;
 		}
@@ -113,7 +113,7 @@ class sp_Config
 		sp_assert($this -> env_checked);
 		if( ! $this -> config_loaded)
 		{
-			$this -> config_array = sp_ArrayUtils::load_config( $this->sp->basedir()."/".sp_StaticProjector::config_dir."/".sp_StaticProjector::config_file );
+			$this -> config_array = sp_ArrayUtils::load_config( $this->sp->targetdir()."/".sp_StaticProjector::config_dir."/".sp_StaticProjector::config_file );
 			$config = array_map("trim", $this -> config_array);
 			
 			if(0 == strcasecmp($config["sp.regen_cache"],"No"))

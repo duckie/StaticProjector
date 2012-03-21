@@ -21,43 +21,43 @@ class sp_Template
 	{
 		if(! $this -> loaded)
 		{
-			$controller = $this -> sp -> basedir()."/".sp_StaticProjector::templates_dir."/".$this->name."_controller.php";
+			$controller = $this -> sp -> targetdir()."/".sp_StaticProjector::templates_dir."/".$this->name."_controller.php";
 			sp_StaticRegister::push_object("sp", $this -> sp);
 			
 			if(!file_exists($controller))
 			{
 				if($this -> name == "default")
 				{
-					$default_controller = __DIR__."/defaults/default_controller.php";
+					$default_controller = $this -> sp -> defaultsdir()."/default_controller.php";
 					@copy($default_controller, $controller);
 				}
 				else
 				{
-					$base_code = file_get_contents(__DIR__."/defaults/new_controller.txt");
+					$base_code = file_get_contents($this -> sp -> defaultsdir()."/new_controller.txt");
 					$controller_code = str_replace("%controller_name%", $this->name."_controller", $base_code);
 					file_put_contents($controller, $controller_code);
 				}
 			}
 			@require_once($controller);
 
-			$template = $this -> sp -> basedir()."/".sp_StaticProjector::templates_dir."/".$this->name."_template.php";
+			$template = $this -> sp -> targetdir()."/".sp_StaticProjector::templates_dir."/".$this->name."_template.php";
 			if(!file_exists($template))
 			{
 				if($this -> name == "default")
 				{
-					$default_template = __DIR__."/defaults/default_template.php";
+					$default_template = $this -> sp -> defaultsdir()."/default_template.php";
 					@copy($default_template, $template);
 				}
 				else
 				{
 					$chunks_code = "";
-					$chunk_base = file_get_contents(__DIR__."/defaults/new_template_chunk.txt");
+					$chunk_base = file_get_contents($this -> sp -> defaultsdir()."/new_template_chunk.txt");
 					foreach($this -> sp -> get_config() -> default_templates_chunks() as $chunk)
 					{
 						$chunks_code .= str_replace("%chunk_name%",$chunk,$chunk_base);
 					}
 					
-					$template_base = file_get_contents(__DIR__."/defaults/new_template.txt");
+					$template_base = file_get_contents($this -> sp -> defaultsdir()."/new_template.txt");
 					$template_code = str_replace("%template_name%", $this -> name."_template", $template_base);
 					$template_code = str_replace("%template_chunks%", $chunks_code, $template_code);
 					file_put_contents($template, $template_code);
