@@ -58,7 +58,10 @@ function sp_filter_path($iPath)
  */
 function sp_assert($iAssertion, $iMessage="")
 {
-	assert($iAssertion);
+	if( ! $iAssertion)
+	{
+		throw new ErrorException("Assertion failed. $iMessage");
+	}
 }
 
 /**
