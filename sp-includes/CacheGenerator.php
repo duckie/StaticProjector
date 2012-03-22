@@ -130,7 +130,7 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 	}
 	
 	public function execute()
-	{
+	{	
 		if( ! $this -> is_processed())
 		{
 			if(! file_exists($this -> cache_dir))
@@ -189,7 +189,7 @@ class sp_PrivateCacheGenerator extends sp_FileReaderVisitor
 			array_push($this -> current_file_stack, $this -> current_file_order);
 		
 		$file_order_file = $this -> user_cache.$info -> relative_path."/".sp_StaticProjector::file_order_name;
-		if(! file_exists($file_order_file)) throw new ErrorException("The order file $file_order_file has not been found, check that the user cache is generated");
+		sp_assert(file_exists($file_order_file));
 		$this -> current_file_order = file($file_order_file, FILE_IGNORE_NEW_LINES);
 	}
 	
@@ -204,7 +204,7 @@ class sp_PrivateCacheGenerator extends sp_FileReaderVisitor
 		$info_to_store = $info -> as_array();
 		$info_to_store["order_index"] = array_search($info -> name, $this -> current_file_order);
 		$user_cache_file = $this -> user_cache.$info -> relative_path.sp_StaticProjector::file_metadata_ext;
-		if(! file_exists($user_cache_file)) throw new ErrorException("The metadata file $user_cache_file has not been found, check that the user cache is generated");
+		sp_assert(file_exists($user_cache_file));
 		$user_cache_data = sp_ArrayUtils::load_config($user_cache_file);
 		$info_to_store = array_merge($info_to_store, $user_cache_data);
 		array_push($this -> dic_array, $info_to_store);
@@ -212,28 +212,30 @@ class sp_PrivateCacheGenerator extends sp_FileReaderVisitor
 	
 	public function execute()
 	{
-		$this -> debug = (sp_Config::debug == $this -> sp -> get_config() -> debug_mode());
-		
-		if( ! file_exists($this -> cache_dir))
-		{
-			@mkdir($this -> cache_dir, null, true);
-			sp_forbid_http_access($this -> cache_dir);
-		}
-		sp_assert(is_dir($this -> cache_dir));
-		parent::execute();
-		sp_ArrayUtils::store_array($this -> dic_array, $this -> dic_file, $this -> debug);
-				
-		// Parsing routes
-		$routes_data = array();
-	    $routes = file($this -> sp -> targetdir()."/".sp_StaticProjector::config_dir."/".sp_StaticProjector::routes_file, FILE_IGNORE_NEW_LINES);
-		foreach ($routes as $route_pattern)
-		{
-			if(preg_match("#^([^>\s]+)\s*->\s*([a-zA-Z0-9_\-]+)\s*\(([^\s]*)\)\s*$#",$route_pattern,$matches))
+		if( ! $this -> is_processed())
+		{				
+			$this -> debug = (sp_Config::debug == $this -> sp -> get_config() -> debug_mode());
+			if( ! file_exists($this -> cache_dir))
 			{
-				array_push($routes_data, array("route" => $matches[1], "template" => $matches[2], "replace_pattern" => $matches[3]));
+				@mkdir($this -> cache_dir, null, true);
+				sp_forbid_http_access($this -> cache_dir);
 			}
+			sp_assert(is_dir($this -> cache_dir));
+			parent::execute();
+			sp_ArrayUtils::store_array($this -> dic_array, $this -> dic_file, $this -> debug);
+
+			// Parsing routes
+			$routes_data = array();
+			$routes = file($this -> sp -> targetdir()."/".sp_StaticProjector::config_dir."/".sp_StaticProjector::routes_file, FILE_IGNORE_NEW_LINES);
+			foreach ($routes as $route_pattern)
+			{
+				if(preg_match("#^([^>\s]+)\s*->\s*([a-zA-Z0-9_\-]+)\s*\(([^\s]*)\)\s*$#",$route_pattern,$matches))
+				{
+					array_push($routes_data, array("route" => $matches[1], "template" => $matches[2], "replace_pattern" => $matches[3]));
+				}
+			}
+			sp_ArrayUtils::store_array($routes_data, $this -> sp -> targetdir()."/".sp_StaticProjector::cache_dir."/".sp_StaticProjector::routes_dico, $this -> debug);
 		}
-		sp_ArrayUtils::store_array($routes_data, $this -> sp -> targetdir()."/".sp_StaticProjector::cache_dir."/".sp_StaticProjector::routes_dico, $this -> debug);
 	}
 }
 

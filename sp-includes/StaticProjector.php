@@ -92,6 +92,10 @@ class sp_StaticProjector
 	{
 		// This function initializes everything at installation, does nothing otherwise
 		$this -> config -> CheckAndRestoreEnvironment();
+		
+		// Check the data dir is here
+		$data_dir = $this -> basedir()."/".sp_StaticProjector::data_dir;
+		if( ! is_dir($data_dir)) $this -> log(sp_Logger::fatal, "Data dir $data_dir not found.");
 		//set_include_path(get_include_path() . PATH_SEPARATOR . $this->basedir()."/".self::templates_dir);
 		
 		// First thing to do before modifying anything : computing timestamp
@@ -141,6 +145,10 @@ class sp_StaticProjector
 		if( sp_Config::with_log == $this -> config -> log_status() )
 		{
 			$this -> logger -> log($iLevel, $iMessage);
+			if(sp_Logger::fatal == $iLevel)
+			{
+				exit();		
+			}
 		}
 	}
 }
