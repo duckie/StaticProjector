@@ -1,0 +1,5 @@
+public function %chunk_name%($iData) 
+{
+	parent::%chunk_name%($iData);
+}
+

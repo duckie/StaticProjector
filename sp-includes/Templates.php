@@ -22,6 +22,8 @@ class sp_Template
 		if(! $this -> loaded)
 		{
 			$controller = $this -> sp -> basedir()."/".sp_StaticProjector::templates_dir."/".$this->name."_controller.php";
+			sp_StaticRegister::push_object("sp", $this -> sp);
+			
 			if(!file_exists($controller))
 			{
 				if($this -> name == "default")
@@ -31,10 +33,12 @@ class sp_Template
 				}
 				else
 				{
-					sp_assert(false); // Not implemented
+					$base_code = file_get_contents(__DIR__."/defaults/new_controller.txt");
+					$controller_code = str_replace("%controller_name%", $this->name."_controller", $base_code);
+					file_put_contents($controller, $controller_code);
 				}
 			}
-			require($controller);
+			@require_once($controller);
 
 			$template = $this -> sp -> basedir()."/".sp_StaticProjector::templates_dir."/".$this->name."_template.php";
 			if(!file_exists($template))
@@ -46,12 +50,29 @@ class sp_Template
 				}
 				else
 				{
-					sp_assert(false); // Not implemented
+					$chunks_code = "";
+					$chunk_base = file_get_contents(__DIR__."/defaults/new_template_chunk.txt");
+					foreach($this -> sp -> get_config() -> default_templates_chunks() as $chunk)
+					{
+						$chunks_code .= str_replace("%chunk_name%",$chunk,$chunk_base);
+					}
+					
+					$template_base = file_get_contents(__DIR__."/defaults/new_template.txt");
+					$template_code = str_replace("%template_name%", $this -> name."_template", $template_base);
+					$template_code = str_replace("%template_chunks%", $chunks_code, $template_code);
+					file_put_contents($template, $template_code);
 				}
 			}
-			require($template);
+			@require_once($template);
+			sp_StaticRegister::pop_object("sp");
+			
 			$this -> loaded = true;
 		}
+	}
+	
+	public function load()
+	{
+		$this -> load_template();
 	}
 	
 	public function render($iData)
@@ -66,6 +87,13 @@ class sp_Template
 		$template -> render_chunk("main", $result_data);
 	}
 
+}
+
+function sp_require_template($iName)
+{
+	$sp = sp_StaticRegister::get_object("sp");
+	$template = new sp_Template($sp, $iName);
+	$template -> load();
 }
 
 function sp_insert_chunk($iChunkName, $iData)

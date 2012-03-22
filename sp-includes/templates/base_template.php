@@ -21,7 +21,7 @@ abstract class sp_base_template
 <div id="body">
 <div id="header">
 <div id="banner"><?php sp_insert_chunk("banner", $iData);?></div>
-<div id="menu"><?php sp_insert_chunk("menu", $iData["menu"]);?></div>
+<div id="menu"><?php if(key_exists("menu", $iData)) sp_insert_chunk("menu", $iData["menu"]);?></div>
 </div>
 
 <div id="content">

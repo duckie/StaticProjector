@@ -1,0 +1,10 @@
+<?php
+
+sp_require_template("default");
+
+class %template_name% extends default_template { 
+
+%template_chunks%
+
+
+}?>

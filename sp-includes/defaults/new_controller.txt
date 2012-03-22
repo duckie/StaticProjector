@@ -1,0 +1,21 @@
+<?php 
+
+sp_require_template("default");
+
+class %controller_name% extends default_controller
+{
+	public function __construct($iSP, $iName)
+	{
+		parent::__construct($iSP, $iName);
+	}
+	
+	public function execute($iData)
+	{
+		// $datas = array();
+		// $this -> gather_common_datas($datas);
+		
+		$datas = parent::execute($iData);
+
+		return $datas;
+	}
+}
