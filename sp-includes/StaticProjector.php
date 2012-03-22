@@ -54,13 +54,13 @@ class sp_StaticProjector
 	 */
 	public function __construct($iBasedir, $iTargetDir, $iBaseUrl, $iRequest)
 	{
-		$this -> basedir = $iBasedir;
-		$this -> targetdir = $iTargetDir;
+		$this -> basedir = str_replace("\\", "/", $iBasedir);
+		$this -> targetdir = str_replace("\\", "/", $iTargetDir);
 		$this -> baseurl = $iBaseUrl;
 		$this -> request = $iRequest;
 		$this -> config = new sp_Config($this);
 		$this -> logger = new sp_Logger($this);
-		$this -> resources = new sp_ResourceBrowser($this);
+		$this -> resources = null;
 	}
 	
 	public function get_config()
@@ -107,6 +107,9 @@ class sp_StaticProjector
 		
 		// Generating the caches
 		$cache_gen -> run();
+		
+		// Loading resources
+		$this -> resources = new sp_ResourceBrowser($this);
 		
 		// Rendeing
 		$commands = new sp_Commands($this);

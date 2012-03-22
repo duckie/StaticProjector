@@ -1,7 +1,5 @@
 <?php
 
-
-
 class sp_full_static_projector_01 extends sp_test
 {
 	protected function private_run(array $iParameters)
