@@ -29,3 +29,4 @@ RunAndPrintTest("file_reader_03", array("src" => "$data_in/repository1","dst" =>
 RunAndPrintTest("file_utils_01");
 RunAndPrintTest("utils_arrays_01");
 RunAndPrintTest("menu_parser_01",array("file" => "$data_in/repository3/menu.txt"));
+RunAndPrintTest("full_static_projector_01");
