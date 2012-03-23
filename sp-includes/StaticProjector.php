@@ -96,7 +96,9 @@ class sp_StaticProjector
 		// Check the data dir is here
 		$data_dir = $this -> basedir()."/".sp_StaticProjector::data_dir;
 		if( ! is_dir($data_dir)) $this -> log(sp_Logger::fatal, "Data dir $data_dir not found.");
+		
 		//set_include_path(get_include_path() . PATH_SEPARATOR . $this->basedir()."/".self::templates_dir);
+		sp_StaticRegister::push_object("debug_state", sp_Config::debug == $this -> config -> debug_mode());
 		
 		// First thing to do before modifying anything : computing timestamp
 		// Must be done before any call to log() cause log() may modify this state
@@ -128,7 +130,7 @@ class sp_StaticProjector
 			$this -> log(sp_Logger::error, "No route found for ".$this -> request.".");
 		}
 		
-		
+		sp_StaticRegister::pop_object("debug_state");
 		$this -> log(sp_Logger::info,"Static Projector execution ended.");
 	}
 	

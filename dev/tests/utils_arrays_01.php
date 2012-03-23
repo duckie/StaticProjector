@@ -31,7 +31,26 @@ class sp_utils_arrays_01 extends sp_test
 		$file_test = $this -> create_ref_to_check();
 		$array_config = sp_ArrayUtils::load_config($this -> root_dir()."/sp-includes/defaults/".sp_StaticProjector::config_file);
 		sp_ArrayUtils::store_config($array_config, $file_test);
+		
+		$array4 = array("elem4","elem5","elem3","elem1","elem6");
+		$file_test = $this -> create_ref_to_check();
+		$array_union = sp_ArrayUtils::union($array1, $array4);
+		sp_ArrayUtils::store_array($array_union, $file_test);
+		
+		$array5 = array(
+				array("name" => "Roger", "gf" => "Martine", "ps" => 12),
+				array("gf" => "Andree", "name" => "Robert", "ps" => 11),
+				array("name" => "Maurice", "ps" => 14, "gf" => "Melissandre")
+				);
+		
+		$file_test = $this -> create_ref_to_check();
+		$array_columns = sp_ArrayUtils::rows_to_columns($array5);
+		sp_ArrayUtils::store_array($array_columns, $file_test);
 
+		$file_test = $this -> create_ref_to_check();
+		$array_rows = sp_ArrayUtils::columns_to_rows($array_columns);
+		sp_ArrayUtils::store_array($array_rows, $file_test);
+		
 		return $success;
 	}
 }

@@ -1,0 +1,1 @@
+<?php $sp_stored_array=array("name"=>array("Roger","Robert","Maurice"),"gf"=>array("Martine","Andree","Melissandre"),"ps"=>array(12,11,14));?>
