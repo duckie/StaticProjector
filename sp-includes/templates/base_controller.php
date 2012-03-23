@@ -33,5 +33,10 @@ abstract class sp_base_controller
 		$iArrayToStore["content"] = null;
 	}
 	
+	protected function query(sp_Criterion $iCriterion)
+	{
+		return $this -> get_root() -> resources() -> query_resources($iCriterion);
+	}
+	
 	abstract public function execute($iData);
 }

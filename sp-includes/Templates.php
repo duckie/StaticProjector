@@ -125,6 +125,11 @@ function sp_resource_url($iRequest)
 	return $sp -> baseurl().sp_filter_path($iRequest);	
 }
 
+function sp_link($iUrl, $iText, $iCSSClass = null)
+{
+	echo( (null === $iCSSClass) ? "<a href=\"$iUrl\">$iText</a>" : "<a class=\"$iCSSClass\" href=\"$iUrl\">$iText</a>" );
+}
+
 function sp_url($iRequest)
 {
 	$sp = sp_StaticRegister::get_object("sp");

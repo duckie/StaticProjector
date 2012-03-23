@@ -42,9 +42,13 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 			$file_list = $local_vis -> get_list();
 			$cache_list = array();
 			$file_order_name = $cache_dir."/".sp_StaticProjector::file_order_name;
+			
+			$previous_cache_list = array();
 			if(file_exists($file_order_name))
 			{
-				$cache_list = file($file_order_name, FILE_IGNORE_NEW_LINES);
+				$cache_list = sp_ArrayUtils::load_config($file_order_name);
+				$previous_cache_list = $cache_list;
+				
 				// Search the files which do not exists anymore
 				$not_existing_files = array_diff($cache_list,$file_list);
 
@@ -78,7 +82,8 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 				$cache_list = $file_list;
 			}
 
-			sp_ArrayUtils::store_config($cache_list,$file_order_name);
+			if($previous_cache_list != $cache_list)
+				sp_ArrayUtils::store_config($cache_list,$file_order_name);
 		//} // lol
 		
 		// Adding route patterns
@@ -108,6 +113,8 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 			{
 				$data = sp_ArrayUtils::load_config($meta_file);
 			}
+			$previous_data = $data;
+			
 			//$data = sp_ArrayUtils::load_config($meta_file);
 			if(!array_key_exists(sp_StaticProjector::file_metadata_title_field, $data))
 			{
@@ -121,7 +128,8 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 				}
 			}
 			
-			sp_ArrayUtils::store_config($data, $meta_file);
+			if($previous_data != $data)
+				sp_ArrayUtils::store_config($data, $meta_file);
 		}
 		
 		// Default route
@@ -259,7 +267,7 @@ class sp_CacheGenerator
 	{
 		$this -> data_stamp = sp_FileReader::get_directory_last_modified($this -> sp -> basedir()."/".sp_StaticProjector::data_dir);
 		$this -> uc_stamp = sp_FileReader::get_directory_last_modified($this -> sp -> targetdir()."/".sp_StaticProjector::user_cache_dir);
-		$this -> cache_stamp = sp_FileReader::get_directory_last_modified($this -> sp -> targetdir()."/".sp_StaticProjector::cache_dir);
+		$this -> cache_stamp = sp_FileReader::get_directory_last_modified($this -> sp -> targetdir()."/".sp_StaticProjector::cache_dir."/".sp_StaticProjector::dic_file);
 	}
 	
 	private function update_user_cache()
