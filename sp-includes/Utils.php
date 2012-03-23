@@ -251,7 +251,6 @@ class sp_ArrayUtils
 	 */
 	public static function union(array $iArray1,array  $iArray2)
 	{
-		if(sp_debug()) sp_assert( !self::is_assoc_array($iArray1) && !self::is_assoc_array($iArray2));
 		return array_merge($iArray1,array_diff($iArray2, $iArray1));
 	}
 	
@@ -270,15 +269,17 @@ class sp_ArrayUtils
 	 */
 	public static function rows_to_columns(array $iArray, $keys = null)
 	{
-		if(sp_debug()) sp_assert(2 == self::compute_array_depth($iArray));
+		//if(sp_debug()) sp_assert(2 == self::compute_array_depth($iArray));
 		
 		if(!is_array($keys))
 		{
-			if(sp_debug()) sp_assert( !self::is_multidimensional_array($keys) && !self::is_assoc_array($keys));
 			$keys = array();
 			foreach($iArray as $row)
+			{
 				$keys = self::union($keys, array_keys($row));
+			}
 		}
+		if(sp_debug()) sp_assert( !self::is_multidimensional_array($keys));
 		
 		$dest = array();
 		foreach($iArray as $row)

@@ -162,6 +162,7 @@ class sp_PrivateCacheGenerator extends sp_FileReaderVisitor
 	private $dic_file;
 	private $dic_fp;
 	private $dic_array;
+	private $id = 0;
 	
 	private $current_file_stack = array();
 	private $current_file_order = null;
@@ -203,6 +204,8 @@ class sp_PrivateCacheGenerator extends sp_FileReaderVisitor
 		if(empty($info -> relative_path)) return; // Case of basedir folder
 		$info_to_store = $info -> as_array();
 		$info_to_store["order_index"] = array_search($info -> name, $this -> current_file_order);
+		$info_to_store["id"] = $this -> id ++;
+		$info_to_store["url"] = $this -> sp -> baseurl()."/".sp_StaticProjector::data_dir.$info -> relative_path;
 		$user_cache_file = $this -> user_cache.$info -> relative_path.sp_StaticProjector::file_metadata_ext;
 		sp_assert(file_exists($user_cache_file));
 		$user_cache_data = sp_ArrayUtils::load_config($user_cache_file);
