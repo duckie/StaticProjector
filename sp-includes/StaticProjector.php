@@ -35,6 +35,7 @@ class sp_StaticProjector
 	const file_order_name = "_sp_fileorder.txt";
 	const file_metadata_ext = ".txt";
 	const file_metadata_title_field = "title";
+	const file_metadata_create_field ="timestamp_created";
 	const file_metadata_additional_fields = "link;alt;comment";
 	const dic_file = "db.dico";
 	const routes_file = "routes.txt";

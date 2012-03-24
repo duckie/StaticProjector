@@ -113,6 +113,10 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 			{
 				$data[sp_StaticProjector::file_metadata_title_field] = $info->basename;
 			}
+			if(!array_key_exists(sp_StaticProjector::file_metadata_create_field, $data))
+			{
+				$data[sp_StaticProjector::file_metadata_title_field] = $info->last_modified_timestamp;
+			}
 			foreach($this->meta_additional_fields as $field)
 			{
 				if(!array_key_exists($field,$data))
