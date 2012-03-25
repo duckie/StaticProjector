@@ -100,7 +100,7 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 		if(file_exists($cache_file) && is_dir($cache_file) && ! $info -> is_dir)
 		{
 			$del = new sp_RecursiveDeleter($cache_file);
-			$del->execute();
+			//$del->execute();
 		}
 		
 		// Adding rich data 

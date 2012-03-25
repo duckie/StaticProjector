@@ -95,7 +95,7 @@ class sp_StaticProjector
 		$this -> config -> CheckAndRestoreEnvironment();
 		
 		// Check the data dir is here
-		$data_dir = $this -> basedir()."/".sp_StaticProjector::data_dir;
+		$data_dir = $this -> basedir().'/'.sp_StaticProjector::data_dir;
 		if( ! is_dir($data_dir)) $this -> log(sp_Logger::fatal, "Data dir $data_dir not found.");
 		
 		//set_include_path(get_include_path() . PATH_SEPARATOR . $this->basedir()."/".self::templates_dir);
