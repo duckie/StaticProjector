@@ -81,10 +81,18 @@ class sp_Template
 		$controller_name = $this->name."_controller";
 		$controller = new $controller_name($this -> sp, $this -> name);
 		$result_data = $controller -> execute($iData);
+		$redirect = $controller -> get_redirect();
 		
-		$template_name = $this->name."_template";
-		$template = new $template_name();
-		$template -> render_chunk("main", $result_data);
+		if(null === $redirect)
+		{
+			$template_name = $this->name."_template";
+			$template = new $template_name();
+			$template -> render_chunk("main", $result_data);
+		}
+		else
+		{
+			$this -> sp -> execute_request($redirect);
+		}
 	}
 
 }

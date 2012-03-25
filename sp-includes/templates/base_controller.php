@@ -4,11 +4,17 @@ abstract class sp_base_controller
 {
 	private $sp;
 	private $name;
+	private $redirect = null;
 	
-	public function __construct($iSP,$iName)
+	public function __construct(sp_StaticProjector $iSP,$iName)
 	{
 		$this -> sp = $iSP;
 		$this -> name = $iName;
+	}
+	
+	public function get_redirect()
+	{
+		return $this -> redirect;
 	}
 	
 	protected function get_root()
@@ -19,6 +25,16 @@ abstract class sp_base_controller
 	protected function get_name()
 	{
 		return $this -> name;
+	}
+	
+	protected function redirect($iRequest)
+	{
+		$this -> redirect = $iRequest;
+	}
+	
+	protected function redirect_to_notfound()
+	{
+		$this -> redirect = $this -> sp -> get_config() -> get_fail_route();
 	}
 	
 	protected function gather_common_datas(array &$iArrayToStore)

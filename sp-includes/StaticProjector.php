@@ -21,6 +21,7 @@ class sp_StaticProjector
 	private $config;
 	private $logger;
 	private $resources;
+	private $commands;
 	
 	const version = "0.1";
 	const data_dir = "data";
@@ -62,6 +63,7 @@ class sp_StaticProjector
 		$this -> request = $iRequest;
 		$this -> config = new sp_Config($this);
 		$this -> logger = new sp_Logger($this);
+		$this -> commands = new sp_Commands($this);
 		$this -> resources = null;
 	}
 	
@@ -114,25 +116,34 @@ class sp_StaticProjector
 		// Loading resources
 		$this -> resources = new sp_ResourceBrowser($this);
 		
-		// Rendeing
-		$commands = new sp_Commands($this);
-		$success = $commands -> execute_request($this -> request);
-		if($success)
-		{
-			$template = $commands -> get_template();
-			$renderer = new sp_Template($this, $template);
-			
-			sp_StaticRegister::push_object("sp", $this);
-			$data = $renderer -> render($commands -> get_command_data());
-			sp_StaticRegister::pop_object("sp");			
-		}
-		else
-		{
-			$this -> log(sp_Logger::error, "No route found for ".$this -> request.".");
-		}
+		// Rendering
+		$this -> execute_request($this -> request);
 		
 		sp_StaticRegister::pop_object("debug_state");
 		$this -> log(sp_Logger::info,"Static Projector execution ended.");
+	}
+	
+	public function execute_request($iRequest)
+	{
+		$success = $this -> commands -> execute_request(sp_filter_path($iRequest));
+		
+		if(!$success)
+			$success = $this -> commands -> execute_request( $this -> config -> get_fail_route());
+		
+		if($success)
+		{
+			$template = $this -> commands -> get_template();
+			$renderer = new sp_Template($this, $template);
+				
+			sp_StaticRegister::push_object("sp", $this);
+			$data = $renderer -> render($this -> commands -> get_command_data());
+			sp_StaticRegister::pop_object("sp");
+		}
+		else
+		{
+			;
+			$this -> log(sp_Logger::error, "No route found for ".$this -> request.".");
+		}
 	}
 	
 	public function basedir()

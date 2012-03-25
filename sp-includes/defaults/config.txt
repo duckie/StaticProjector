@@ -4,14 +4,16 @@ website.author = Put your name
 
 # Set it to No, Auto or Yes.
 # No - The cache is never generated. To be used when you know what youre doing
-# Auto - The cache is generated when it has to be after a change in the user files
-# Yes - The cache is always rewritten
+# Yes - The cache is rewritten if needed. The whole file structure is browsed to be checked.
 sp.regen_cache = Yes
 
 # Activate logging things : set it to Yes or No
 # Useful for debugging purpose if someting is wrong
 # The log file is written in cache/log.txt
 sp.activate_log = No
+
+# The route to be called when the asked one fails
+sp.notfound_route = error404
 
 # Debug mode - Some of the internal data are generated in another format. For developers
 sp.debug = No

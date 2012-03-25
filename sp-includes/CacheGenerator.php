@@ -339,7 +339,9 @@ class sp_CacheGenerator
 				$this -> routes_stamp = filemtime($route_out);
 			}
 			
-			sp_ArrayUtils::store_array(array($this -> uc_stamp, $this -> cache_stamp, $this -> routes_stamp), $cache_stamp_file);
+			$new_stamp = array($this -> uc_stamp, $this -> cache_stamp, $this -> routes_stamp);
+			if($stamp_data != $new_stamp)
+				sp_ArrayUtils::store_array($new_stamp, $cache_stamp_file);
 		}
 	}
 }
