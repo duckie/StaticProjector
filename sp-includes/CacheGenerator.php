@@ -16,7 +16,7 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 		$this -> uc_dir = $this -> sp -> targetdir()."/".sp_StaticProjector::user_cache_dir;
 		$this -> conf_dir = $this -> sp -> targetdir()."/".sp_StaticProjector::config_dir;
 		$this -> cache_dir = $this -> sp -> targetdir()."/".sp_StaticProjector::cache_dir;
-		$this -> with_details = false;
+		$this -> with_details = true;
 		$this -> is_recursive = true;
 		$this -> meta_additional_fields = explode(";", sp_StaticProjector::file_metadata_additional_fields);
 		$this -> routes = array();
@@ -100,7 +100,7 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 		if(file_exists($cache_file) && is_dir($cache_file) && ! $info -> is_dir)
 		{
 			$del = new sp_RecursiveDeleter($cache_file);
-			//$del->execute();
+			$del->execute();
 		}
 		
 		// Adding rich data 
@@ -121,7 +121,7 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 			}
 			if(!array_key_exists(sp_StaticProjector::file_metadata_create_field, $data))
 			{
-				$data[sp_StaticProjector::file_metadata_title_field] = $info->last_modified_timestamp;
+				$data[sp_StaticProjector::file_metadata_create_field] = $info->last_modified_timestamp;
 			}
 			foreach($this->meta_additional_fields as $field)
 			{
