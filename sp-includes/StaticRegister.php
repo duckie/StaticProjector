@@ -26,5 +26,8 @@ class sp_StaticRegister
 		return self::$register[$iKey][count(self::$register[$iKey])-1];
 	}
 	
-
+	static public function has_object($iKey)
+	{
+		return key_exists($iKey,self::$register);
+	}
 }

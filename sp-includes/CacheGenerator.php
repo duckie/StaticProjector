@@ -13,9 +13,9 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 	{
 		$this -> sp = $iSP;
 		$this -> basedir = $this -> sp -> basedir()."/".sp_StaticProjector::data_dir;
-		$this -> uc_dir = $this -> sp -> basedir()."/".sp_StaticProjector::user_cache_dir;
-		$this -> conf_dir = $this -> sp -> basedir()."/".sp_StaticProjector::config_dir;
-		$this -> cache_dir = $this -> sp -> basedir()."/".sp_StaticProjector::cache_dir;
+		$this -> uc_dir = $this -> sp -> targetdir()."/".sp_StaticProjector::user_cache_dir;
+		$this -> conf_dir = $this -> sp -> targetdir()."/".sp_StaticProjector::config_dir;
+		$this -> cache_dir = $this -> sp -> targetdir()."/".sp_StaticProjector::cache_dir;
 		$this -> with_details = false;
 		$this -> is_recursive = true;
 		$this -> meta_additional_fields = explode(";", sp_StaticProjector::file_metadata_additional_fields);
@@ -42,9 +42,13 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 			$file_list = $local_vis -> get_list();
 			$cache_list = array();
 			$file_order_name = $cache_dir."/".sp_StaticProjector::file_order_name;
+			
+			$previous_cache_list = array();
 			if(file_exists($file_order_name))
 			{
-				$cache_list = file($file_order_name, FILE_IGNORE_NEW_LINES);
+				$cache_list = sp_ArrayUtils::load_config($file_order_name);
+				$previous_cache_list = $cache_list;
+				
 				// Search the files which do not exists anymore
 				$not_existing_files = array_diff($cache_list,$file_list);
 
@@ -78,7 +82,8 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 				$cache_list = $file_list;
 			}
 
-			sp_ArrayUtils::store_config($cache_list,$file_order_name);
+			if($previous_cache_list != $cache_list)
+				sp_ArrayUtils::store_config($cache_list,$file_order_name);
 		//} // lol
 		
 		// Adding route patterns
@@ -103,12 +108,13 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 		{
 			$meta_file = $cache_file.sp_StaticProjector::file_metadata_ext;
 			$data = array();
-			//$meta_file = "C:\\Documents and Settings\\jj4\\prog\\StaticProjector\\web-data\\data\\images.txt";
+
 			if(file_exists($meta_file))
 			{
 				$data = sp_ArrayUtils::load_config($meta_file);
 			}
-			//$data = sp_ArrayUtils::load_config($meta_file);
+			$previous_data = $data;
+			
 			if(!array_key_exists(sp_StaticProjector::file_metadata_title_field, $data))
 			{
 				$data[sp_StaticProjector::file_metadata_title_field] = $info->basename;
@@ -125,7 +131,8 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 				}
 			}
 			
-			sp_ArrayUtils::store_config($data, $meta_file);
+			if($previous_data != $data)
+				sp_ArrayUtils::store_config($data, $meta_file);
 		}
 		
 		// Default route
@@ -134,7 +141,7 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 	}
 	
 	public function execute()
-	{
+	{	
 		if( ! $this -> is_processed())
 		{
 			if(! file_exists($this -> cache_dir))
@@ -166,6 +173,7 @@ class sp_PrivateCacheGenerator extends sp_FileReaderVisitor
 	private $dic_file;
 	private $dic_fp;
 	private $dic_array;
+	private $id = 0;
 	
 	private $current_file_stack = array();
 	private $current_file_order = null;
@@ -176,15 +184,15 @@ class sp_PrivateCacheGenerator extends sp_FileReaderVisitor
 	public function __construct(sp_StaticProjector $iSP)
 	{
 		$this -> sp = $iSP;
-		$this -> basedir = $this -> sp -> basedir()."/".sp_StaticProjector::data_dir;
-		$this -> user_cache = $this -> sp -> basedir()."/".sp_StaticProjector::user_cache_dir;
-		$this -> cache_dir = $this -> sp -> basedir()."/".sp_StaticProjector::cache_dir;
+		$this -> basedir = $this -> sp -> basedir().'/'.sp_StaticProjector::data_dir;
+		$this -> user_cache = $this -> sp -> targetdir().'/'.sp_StaticProjector::user_cache_dir;
+		$this -> cache_dir = $this -> sp -> targetdir().'/'.sp_StaticProjector::cache_dir;
 		$this -> with_details = true;
 		$this -> is_recursive = true;
-		$this -> dic_file = $this -> cache_dir."/".sp_StaticProjector::dic_file;
+		$this -> dic_file = $this -> cache_dir.'/'.sp_StaticProjector::dic_file;
 		$this -> dic_array = array();
 		$this -> current_file_order = null;
-		$this -> meta_additional_fields = explode(";", sp_StaticProjector::file_metadata_additional_fields);
+		$this -> meta_additional_fields = explode(';', sp_StaticProjector::file_metadata_additional_fields);
 	}
 	
 	public function enter_directory(sp_FileInfo $info)
@@ -192,8 +200,8 @@ class sp_PrivateCacheGenerator extends sp_FileReaderVisitor
 		if(null != $this -> current_file_order)
 			array_push($this -> current_file_stack, $this -> current_file_order);
 		
-		$file_order_file = $this -> user_cache.$info -> relative_path."/".sp_StaticProjector::file_order_name;
-		if(! file_exists($file_order_file)) throw new ErrorException("The order file $file_order_file has not been found, check that the user cache is generated");
+		$file_order_file = $this -> user_cache.$info -> relative_path.'/'.sp_StaticProjector::file_order_name;
+		sp_assert(file_exists($file_order_file));
 		$this -> current_file_order = file($file_order_file, FILE_IGNORE_NEW_LINES);
 	}
 	
@@ -206,9 +214,11 @@ class sp_PrivateCacheGenerator extends sp_FileReaderVisitor
 	{
 		if(empty($info -> relative_path)) return; // Case of basedir folder
 		$info_to_store = $info -> as_array();
-		$info_to_store["order_index"] = array_search($info -> name, $this -> current_file_order);
+		$info_to_store['order_index'] = array_search($info -> name, $this -> current_file_order);
+		$info_to_store['id'] = $this -> id ++;
+		$info_to_store['url'] = $this -> sp -> baseurl().'/'.sp_StaticProjector::data_dir.$info -> relative_path;
 		$user_cache_file = $this -> user_cache.$info -> relative_path.sp_StaticProjector::file_metadata_ext;
-		if(! file_exists($user_cache_file)) throw new ErrorException("The metadata file $user_cache_file has not been found, check that the user cache is generated");
+		sp_assert(file_exists($user_cache_file));
 		$user_cache_data = sp_ArrayUtils::load_config($user_cache_file);
 		$info_to_store = array_merge($info_to_store, $user_cache_data);
 		array_push($this -> dic_array, $info_to_store);
@@ -216,28 +226,30 @@ class sp_PrivateCacheGenerator extends sp_FileReaderVisitor
 	
 	public function execute()
 	{
-		$this -> debug = (sp_Config::debug == $this -> sp -> get_config() -> debug_mode());
-		
-		if( ! file_exists($this -> cache_dir))
-		{
-			@mkdir($this -> cache_dir, null, true);
-			sp_forbid_http_access($this -> cache_dir);
-		}
-		sp_assert(is_dir($this -> cache_dir));
-		parent::execute();
-		sp_ArrayUtils::store_array($this -> dic_array, $this -> dic_file, $this -> debug);
-				
-		// Parsing routes
-		$routes_data = array();
-	    $routes = file($this -> sp -> basedir()."/".sp_StaticProjector::config_dir."/".sp_StaticProjector::routes_file, FILE_IGNORE_NEW_LINES);
-		foreach ($routes as $route_pattern)
-		{
-			if(preg_match("#^([^>\s]+)\s*->\s*([a-zA-Z0-9_\-]+)\s*\(([^\s]*)\)\s*$#",$route_pattern,$matches))
+		if( ! $this -> is_processed())
+		{				
+			$this -> debug = (sp_Config::debug == $this -> sp -> get_config() -> debug_mode());
+			if( ! file_exists($this -> cache_dir))
 			{
-				array_push($routes_data, array("route" => $matches[1], "template" => $matches[2], "replace_pattern" => $matches[3]));
+				@mkdir($this -> cache_dir, null, true);
+				sp_forbid_http_access($this -> cache_dir);
 			}
+			sp_assert(is_dir($this -> cache_dir));
+			parent::execute();
+			sp_ArrayUtils::store_array($this -> dic_array, $this -> dic_file, $this -> debug);
+
+			// Parsing routes
+			$routes_data = array();
+			$routes = file($this -> sp -> targetdir().'/'.sp_StaticProjector::config_dir.'/'.sp_StaticProjector::routes_file, FILE_IGNORE_NEW_LINES);
+			foreach ($routes as $route_pattern)
+			{
+				if(preg_match('#^([^>\s]+)\s*->\s*([a-zA-Z0-9_\-]+)\s*\(([^\s]*)\)\s*$#',$route_pattern,$matches))
+				{
+					array_push($routes_data, array('route' => $matches[1], 'template' => $matches[2], 'replace_pattern' => $matches[3]));
+				}
+			}
+			sp_ArrayUtils::store_array($routes_data, $this -> sp -> targetdir().'/'.sp_StaticProjector::cache_dir.'/'.sp_StaticProjector::routes_dico, $this -> debug);
 		}
-		sp_ArrayUtils::store_array($routes_data, $this -> sp -> basedir()."/".sp_StaticProjector::cache_dir."/".sp_StaticProjector::routes_dico, $this -> debug);
 	}
 }
 
@@ -256,9 +268,9 @@ class sp_CacheGenerator
 	
 	public function check_current_filesystem_state()
 	{
-		$this -> data_stamp = sp_FileReader::get_directory_last_modified($this -> sp -> basedir()."/".sp_StaticProjector::data_dir);
-		$this -> uc_stamp = sp_FileReader::get_directory_last_modified($this -> sp -> basedir()."/".sp_StaticProjector::user_cache_dir);
-		$this -> cache_stamp = sp_FileReader::get_directory_last_modified($this -> sp -> basedir()."/".sp_StaticProjector::cache_dir);
+		$this -> data_stamp = sp_FileReader::get_directory_last_modified($this -> sp -> basedir().'/'.sp_StaticProjector::data_dir);
+		$this -> uc_stamp = sp_FileReader::get_directory_last_modified($this -> sp -> targetdir().'/'.sp_StaticProjector::user_cache_dir);
+		$this -> cache_stamp = sp_FileReader::get_directory_last_modified($this -> sp -> targetdir().'/'.sp_StaticProjector::cache_dir.'/'.sp_StaticProjector::dic_file);
 	}
 	
 	private function update_user_cache()

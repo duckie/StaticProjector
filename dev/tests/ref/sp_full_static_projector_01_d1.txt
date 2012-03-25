@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Static Projector</title>
+<link href="http://localhost/web-data/styles/style.css" rel="stylesheet" type="text/css" /> </head>
+<body>
+<div id="body">
+<div id="header">
+<div id="banner"></div>
+<div id="menu">
+<ul id="nav">
+<li><a href="http://localhost/index.php/">Accueil</a><li>
+<li><a href="#">Galeries</a>
+<ul>
+<li><a href="#">Oiseaux</a>
+<ul>
+<li><a href="http://localhost/index.php/galerie/oiseauxdemer">Oiseaux de mer</a><li>
+<li><a href="http://localhost/index.php/galerie/flamands">Flamands</a><li>
+</ul>
+<li>
+<li><a href="http://google.com">Google</a><li>
+</ul>
+<li>
+<li><a href="http://localhost/index.php/articles/text2.md">Texte 2</a><li>
+</ul>
+</div>
+</div>
+
+<div id="content">
+Hello guys !
+</div>
+
+<div id="footer"></div>
+</div>
+</body>
+</html>

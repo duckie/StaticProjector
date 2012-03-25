@@ -49,11 +49,11 @@ class sp_Logger
 	 */
 	public function log($iLevel, $iMessage)
 	{
-		sp_assert(0 <= $iLevel && $iLevel < 5 && ! empty($iMessage));
+		sp_assert(__FILE__, __LINE__, 0 <= $iLevel && $iLevel < 5 && ! empty($iMessage));
 		if(! $this -> fp)
 		{
-			$this -> fp = fopen($this -> sp -> basedir()."/".sp_StaticProjector::cache_dir."/".sp_StaticProjector::log_file,'w');
-			sp_assert($this -> fp);
+			$this -> fp = fopen($this -> sp -> targetdir()."/".sp_StaticProjector::cache_dir."/".sp_StaticProjector::log_file,'w');
+			sp_assert(__FILE__, __LINE__, $this -> fp);
 		}
 		fwrite($this -> fp, $this->tag_mapper[$iLevel].$iMessage."\n");
 	}

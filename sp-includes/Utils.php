@@ -51,6 +51,16 @@ function sp_filter_path($iPath)
 }
 
 /**
+ * Returns true if a static projector is currently running in debug mode
+ * 
+ * @return bool
+ */
+function sp_debug()
+{
+	return (sp_StaticRegister::has_object("debug_state")) ? sp_StaticRegister::get_object("debug_state") : false;
+}
+
+/**
  * Assertion which can also be an error.
  * 
  * @param bool $iAssertion
@@ -58,7 +68,10 @@ function sp_filter_path($iPath)
  */
 function sp_assert($iAssertion, $iMessage="")
 {
-	assert($iAssertion);
+	if( ! $iAssertion)
+	{
+		throw new ErrorException("Assertion failed. $iMessage");
+	}
 }
 
 /**
@@ -160,7 +173,7 @@ class sp_ArrayUtils
 {
 	private function __construct()
 	{} 
-
+	
 	/**
 	 * Returns true if the array is associative
 	 * 
@@ -169,9 +182,9 @@ class sp_ArrayUtils
 	 * @param mixed $iArray
 	 * @returns bool
 	 */
-	public static function is_assoc_array($iArray)
+	public static function is_assoc_array(array $iArray)
 	{
-		return is_array($iArray) && array_keys($iArray) !== range(0,sizeof($iArray)-1);
+		return array_keys($iArray) !== range(0,sizeof($iArray)-1);
 	}
 	
 	/**
@@ -229,6 +242,89 @@ class sp_ArrayUtils
 	}
 	
 	/**
+	 * Makes the union between two arrays
+	 *
+	 * This is designed for sequential arrays. Not usable with associative arrays (no sense).
+	 *
+	 * @param array $iArray1
+	 * @param array $iArray2
+	 */
+	public static function union(array $iArray1,array  $iArray2)
+	{
+		return array_merge($iArray1,array_diff($iArray2, $iArray1));
+	}
+	
+	/**
+	 * Converts a array of lines into an array of columns
+	 * 
+	 * This is useful to put the result into a multisort function.
+	 * The keys arguments lets you force the key set you want to use. If null,
+	 * it is computed.
+	 * 
+	 * @see sp_ArrayUtils::columns_to_rows
+	 * 
+	 * @param array $iArray
+	 * @param array $keys
+	 * @return array
+	 */
+	public static function rows_to_columns(array $iArray, $keys = null)
+	{
+		//if(sp_debug()) sp_assert(2 == self::compute_array_depth($iArray));
+		
+		if(!is_array($keys))
+		{
+			$keys = array();
+			foreach($iArray as $row)
+			{
+				$keys = self::union($keys, array_keys($row));
+			}
+		}
+		if(sp_debug()) sp_assert( !self::is_multidimensional_array($keys));
+		
+		$dest = array();
+		foreach($iArray as $row)
+		{
+			foreach($keys as $key)
+			{
+				if(!array_key_exists($key, $dest))
+					$dest[$key] = array();
+				
+				$dest[$key][] =  array_key_exists($key,$row) ? $row[$key] : null;
+			}
+		}
+		
+		return $dest;
+	}
+	
+	/**
+	 * Converts an array of the column format to the row format
+	 * 
+	 * @see sp_ArrayUtils::rows_to_columns
+	 * 
+	 * @param array $iArray
+	 * @return array
+	 */
+	public static function columns_to_rows(array $iArray)
+	{
+		if(0 == count($iArray)) return array();
+		reset($iArray);
+		$nb_elem = count(current($iArray));
+		
+		$dest = array();
+		$keys = array_keys($iArray);
+		for($index = 0; $index < $nb_elem; $index++)
+		{
+			$row = array();
+			foreach($keys as $key)
+				$row[$key] = $iArray[$key][$index];
+			
+			$dest[] = $row;
+		}
+		
+		return $dest;
+	}
+	
+	/**
 	 * Dumps the array content in a file, each element separated by the given separator
 	 * 
 	 * @param array $iArray
@@ -250,7 +346,7 @@ class sp_ArrayUtils
 	 * Converts an array into its PHP String representation
 	 * 
 	 * This function supports correctly numeric and boolean values,
-	 * sequential and associative arrays.
+	 * sequential and associative arrays, any depth.
 	 * 
 	 * 
 	 * @param array|string $iArray
@@ -263,7 +359,9 @@ class sp_ArrayUtils
 		if(0 == $iRecurseLevel) return "";
 		if(!is_array($iArray))
 		{
-			if(is_numeric($iArray))
+			if(null === $iArray)
+				return "null";
+			else if(is_numeric($iArray))
 				return $iArray;
 			else if(is_bool($iArray))
 				return $iArray ? "true" : "false";
@@ -341,7 +439,7 @@ class sp_ArrayUtils
 	 */
 	public static function store_config(array &$iArray, $iFileName)
 	{
-		sp_assert( (!self::is_multidimensional_array($iArray)) && (!is_dir($iFileName)) );
+		if(sp_debug()) sp_assert( (!self::is_multidimensional_array($iArray)) && (!is_dir($iFileName)) );
 		$fp = @fopen($iFileName,'w');
 		sp_assert($fp);
 		
@@ -375,7 +473,7 @@ class sp_ArrayUtils
 	 */
 	public function load_config($iFileName)
 	{
-		sp_assert(file_exists($iFileName) && ! is_dir($iFileName));
+		if(sp_debug()) sp_assert(file_exists($iFileName) && ! is_dir($iFileName));
 		$lines = file($iFileName, FILE_IGNORE_NEW_LINES);
 		$result = array();
 		foreach($lines as $line)
@@ -397,7 +495,7 @@ class sp_ArrayUtils
 			}
 		}
 		
-		sp_assert( !self::is_multidimensional_array($iArray) );
+		if(sp_debug()) sp_assert( !self::is_multidimensional_array($iArray) );
 		return $result;
 	}
 	

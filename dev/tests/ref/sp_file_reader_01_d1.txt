@@ -4,5 +4,6 @@
 {"relative_path":"\/images\/list1\/image_01.jpg","name":"image_01.jpg","basename":"image_01","extension":"jpg","is_dir":false,"exif_title":"Image one","exif_comment":"This is the first test image.","exif_tags":["visual-hash","test"]}
 {"relative_path":"\/images\/list1\/image_02.jpg","name":"image_02.jpg","basename":"image_02","extension":"jpg","is_dir":false,"exif_title":"Image two","exif_comment":"This is the second image.","exif_tags":["visual-ash","test"]}
 {"relative_path":"\/images\/list1\/image_03.jpg","name":"image_03.jpg","basename":"image_03","extension":"jpg","is_dir":false,"exif_title":"Image three","exif_comment":"This is the third image.","exif_tags":["visual-hash","test"]}
+{"relative_path":"\/menu.txt","name":"menu.txt","basename":"menu","extension":"txt","is_dir":false,"exif_title":null,"exif_comment":null,"exif_tags":null}
 {"relative_path":"\/pages","name":"pages","basename":"pages","extension":null,"is_dir":true,"exif_title":null,"exif_comment":null,"exif_tags":null}
 {"relative_path":"\/pages\/text1.md","name":"text1.md","basename":"text1","extension":"md","is_dir":false,"exif_title":null,"exif_comment":null,"exif_tags":null}

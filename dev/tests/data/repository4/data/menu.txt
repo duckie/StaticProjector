@@ -1,0 +1,10 @@
+home = Accueil ; /
+
+galerie = Galeries
+galerie.oiseaux = Oiseaux
+galerie.oiseaux.mer = Oiseaux de mer ; galerie/oiseauxdemer
+galerie.oiseaux.flamands = Flamands ; galerie/flamands
+
+galerie.google = Google ; http://google.com
+
+onglet = Texte 2 ; /articles/text2.md

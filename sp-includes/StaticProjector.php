@@ -15,6 +15,7 @@ require_once(__DIR__."/templates/base_template.php");
 class sp_StaticProjector
 {
 	private $basedir;
+	private $targetdir;
 	private $baseurl;
 	private $request;
 	private $config;
@@ -29,7 +30,7 @@ class sp_StaticProjector
 	const style_dir = "web-data/styles";
 	const style_file = "style.css";
 	const cache_dir = "cache";
-	const defaults_dir = "sp-includes/defaults";
+	const defaults_dir = "defaults";
 	const config_file = "config.txt";
 	const log_file = "log.txt";
 	const file_order_name = "_sp_fileorder.txt";
@@ -41,6 +42,7 @@ class sp_StaticProjector
 	const routes_file = "routes.txt";
 	const routes_default_file = "routes.default.txt";
 	const routes_dico = "routes.dico";
+	const exec_dir = __DIR__;
 
 	/**
 	 * StaticProjector constructor
@@ -51,19 +53,30 @@ class sp_StaticProjector
 	 * @param string $iBasedir
 	 * @param string $iRequest
 	 */
-	public function __construct($iBasedir, $iBaseUrl, $iRequest)
+	public function __construct($iBasedir, $iTargetDir, $iBaseUrl, $iRequest)
 	{
-		$this -> basedir = $iBasedir;
+		$this -> basedir = str_replace("\\", "/", $iBasedir);
+		$this -> targetdir = str_replace("\\", "/", $iTargetDir);
 		$this -> baseurl = $iBaseUrl;
 		$this -> request = $iRequest;
 		$this -> config = new sp_Config($this);
 		$this -> logger = new sp_Logger($this);
-		$this -> resources = new sp_ResourceBrowser($this);
+		$this -> resources = null;
 	}
 	
 	public function get_config()
 	{
 		return $this -> config;
+	}
+	
+	public function targetdir()
+	{
+		return $this -> targetdir;
+	}
+	
+	public function defaultsdir()
+	{
+		return sp_StaticProjector::exec_dir."/".sp_StaticProjector::defaults_dir;
 	}
 	
 	public function resources()
@@ -80,7 +93,13 @@ class sp_StaticProjector
 	{
 		// This function initializes everything at installation, does nothing otherwise
 		$this -> config -> CheckAndRestoreEnvironment();
-		set_include_path(get_include_path() . PATH_SEPARATOR . $this->basedir()."/".self::templates_dir);
+		
+		// Check the data dir is here
+		$data_dir = $this -> basedir()."/".sp_StaticProjector::data_dir;
+		if( ! is_dir($data_dir)) $this -> log(sp_Logger::fatal, "Data dir $data_dir not found.");
+		
+		//set_include_path(get_include_path() . PATH_SEPARATOR . $this->basedir()."/".self::templates_dir);
+		sp_StaticRegister::push_object("debug_state", sp_Config::debug == $this -> config -> debug_mode());
 		
 		// First thing to do before modifying anything : computing timestamp
 		// Must be done before any call to log() cause log() may modify this state
@@ -91,6 +110,9 @@ class sp_StaticProjector
 		
 		// Generating the caches
 		$cache_gen -> run();
+		
+		// Loading resources
+		$this -> resources = new sp_ResourceBrowser($this);
 		
 		// Rendeing
 		$commands = new sp_Commands($this);
@@ -109,7 +131,7 @@ class sp_StaticProjector
 			$this -> log(sp_Logger::error, "No route found for ".$this -> request.".");
 		}
 		
-		
+		sp_StaticRegister::pop_object("debug_state");
 		$this -> log(sp_Logger::info,"Static Projector execution ended.");
 	}
 	
@@ -129,6 +151,10 @@ class sp_StaticProjector
 		if( sp_Config::with_log == $this -> config -> log_status() )
 		{
 			$this -> logger -> log($iLevel, $iMessage);
+			if(sp_Logger::fatal == $iLevel)
+			{
+				exit();		
+			}
 		}
 	}
 }

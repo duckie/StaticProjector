@@ -19,6 +19,8 @@ class sp_Config
 	private $default_routes_activated;
 	private $template_chunks;
 	
+	private $force_update = false;
+	
 	const cache_no_regen = 0;
 	const cache_auto_regen = 1;
 	const cache_force_regen = 2;
@@ -44,13 +46,19 @@ class sp_Config
 	 */
 	private function mkdir($iDir)
 	{
+		$created = false;
 		if(!is_dir($iDir))
 		{
 			if(file_exists($iDir))
+			{
 				unlink($iDir);
-			else
-				mkdir($iDir,null,true);
+			}
+
+			mkdir($iDir,null,true);
+			$created = true;
 		}
+		
+		return $created;
 	}
 	
 	/**
@@ -61,21 +69,17 @@ class sp_Config
 	 */
 	private function copy_default_file($iSrc, $iDest)
 	{
-		sp_assert(file_exists($iSrc));
+		$created = false;
 		
-		if(file_exists($iDest))
-		{
-			if(is_dir($iDest) && ! is_dir($iSrc))
-			{
-				$del = new sp_RecursiveDeleter($iDest);
-				$del -> execute();
-			}
-		}
-		else
+		sp_assert(file_exists($iSrc));
+		if( ! file_exists($iDest))
 		{
 			$cp = new sp_RecursiveCopier($iSrc, $iDest);
 			$cp -> execute();
+			$created = true;
 		}
+		
+		return $created;
 	}
 	
 	/**
@@ -88,32 +92,42 @@ class sp_Config
 	{
 		if( ! $this -> env_checked)
 		{
-			$this -> mkdir($this->sp->basedir()."/".sp_StaticProjector::config_dir);
-			$this -> mkdir($this->sp->basedir()."/".sp_StaticProjector::user_cache_dir);
-			$this -> mkdir($this->sp->basedir()."/".sp_StaticProjector::templates_dir);
-			$this -> mkdir($this->sp->basedir()."/".sp_StaticProjector::style_dir);
-			$this -> mkdir($this->sp->basedir()."/".sp_StaticProjector::cache_dir);
-
-			$default_config = $this->sp->basedir()."/".sp_StaticProjector::defaults_dir."/".sp_StaticProjector::config_file;
-			$dest_config = $this->sp->basedir()."/".sp_StaticProjector::config_dir."/".sp_StaticProjector::config_file;
+			$uc_cache_created = $this -> mkdir($this->sp->targetdir()."/".sp_StaticProjector::config_dir);
+			$cache_created = $this -> mkdir($this->sp->targetdir()."/".sp_StaticProjector::cache_dir);
+			// If the folder has just been created, we need to force cache update
+			if($uc_cache_created || $cache_created)
+			{
+				$this -> force_update = true;
+			}
+			
+			$this -> mkdir($this->sp->targetdir()."/".sp_StaticProjector::user_cache_dir);
+			$this -> mkdir($this->sp->targetdir()."/".sp_StaticProjector::templates_dir);
+			$this -> mkdir($this->sp->targetdir()."/".sp_StaticProjector::style_dir);
+			
+			$default_config = $this -> sp -> defaultsdir()."/".sp_StaticProjector::config_file;
+			$dest_config = $this->sp->targetdir()."/".sp_StaticProjector::config_dir."/".sp_StaticProjector::config_file;
 			$this -> copy_default_file($default_config, $dest_config);
 			
-			$default_css = $this->sp->basedir()."/".sp_StaticProjector::defaults_dir."/".sp_StaticProjector::style_file;
-			$dest_css = $this->sp->basedir()."/".sp_StaticProjector::style_dir."/".sp_StaticProjector::style_file;
+			$default_css = $this -> sp -> defaultsdir()."/".sp_StaticProjector::style_file;
+			$dest_css = $this->sp->targetdir()."/".sp_StaticProjector::style_dir."/".sp_StaticProjector::style_file;
 			$this -> copy_default_file($default_css, $dest_css);
 			
-			sp_set_http_granting($this->sp->basedir()."/".sp_StaticProjector::style_dir, SP_HTTP_DENY_LISTING);
-
+			$default_route = $this -> sp -> defaultsdir()."/".sp_StaticProjector::routes_file;
+			$dest_route = $this->sp->targetdir()."/".sp_StaticProjector::config_dir."/".sp_StaticProjector::routes_file;
+			$this -> copy_default_file($default_route, $dest_route);
+			
+			sp_set_http_granting($this->sp->targetdir()."/".sp_StaticProjector::style_dir, SP_HTTP_DENY_LISTING);
+			
 			$this -> env_checked = true;
 		}
 	}
 	
 	private function LoadConfig()
 	{
-		sp_assert($this -> env_checked);
+		sp_assert(__FILE__, __LINE__, $this -> env_checked);
 		if( ! $this -> config_loaded)
 		{
-			$this -> config_array = sp_ArrayUtils::load_config( $this->sp->basedir()."/".sp_StaticProjector::config_dir."/".sp_StaticProjector::config_file );
+			$this -> config_array = sp_ArrayUtils::load_config( $this->sp->targetdir()."/".sp_StaticProjector::config_dir."/".sp_StaticProjector::config_file );
 			$config = array_map("trim", $this -> config_array);
 			
 			if(0 == strcasecmp($config["sp.regen_cache"],"No"))
@@ -150,7 +164,10 @@ class sp_Config
 	public function cache_policy()
 	{
 		$this -> LoadConfig();
-		return $this -> cache_regen;
+		if($this -> force_update)
+			return self::cache_force_regen;
+		else
+			return $this -> cache_regen;
 	}
 	
 	public function default_routes_policy()
