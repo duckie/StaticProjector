@@ -22,8 +22,7 @@ class sp_Config
 	private $force_update = false;
 	
 	const cache_no_regen = 0;
-	const cache_auto_regen = 1;
-	const cache_force_regen = 2;
+	const cache_force_regen = 1;
 
 	const no_debug = 0;
 	const debug = 1;
@@ -116,7 +115,17 @@ class sp_Config
 			$dest_route = $this->sp->targetdir()."/".sp_StaticProjector::config_dir."/".sp_StaticProjector::routes_file;
 			$this -> copy_default_file($default_route, $dest_route);
 			
-			sp_set_http_granting($this->sp->targetdir()."/".sp_StaticProjector::style_dir, SP_HTTP_DENY_LISTING);
+			if (! file_exists($this->sp->targetdir()."/".sp_StaticProjector::cache_dir.'/.htaccess'))
+				sp_set_http_granting($this->sp->targetdir()."/".sp_StaticProjector::cache_dir, SP_HTTP_DENY_ACCESS);
+			
+			if (! file_exists($this->sp->targetdir()."/".sp_StaticProjector::config_dir.'/.htaccess'))
+				sp_set_http_granting($this->sp->targetdir()."/".sp_StaticProjector::config_dir, SP_HTTP_DENY_ACCESS);
+			
+			if (! file_exists($this->sp->targetdir()."/".sp_StaticProjector::user_cache_dir.'/.htaccess'))
+				sp_set_http_granting($this->sp->targetdir()."/".sp_StaticProjector::user_cache_dir, SP_HTTP_DENY_ACCESS);
+			
+			if (! file_exists($this->sp->targetdir()."/".sp_StaticProjector::style_dir.'/.htaccess'))
+				sp_set_http_granting($this->sp->targetdir()."/".sp_StaticProjector::style_dir, SP_HTTP_DENY_LISTING);
 			
 			$this -> env_checked = true;
 		}
@@ -132,14 +141,12 @@ class sp_Config
 			
 			if(0 == strcasecmp($config["sp.regen_cache"],"No"))
 				$this -> cache_regen = self::cache_no_regen;
-			else if(0 == strcasecmp($config["sp.regen_cache"],"Auto"))
-				$this -> cache_regen = self::cache_auto_regen;
 			else
 				$this -> cache_regen = self::cache_force_regen;
 			
 			$this -> debug_mode = (0 == strcasecmp($config["sp.debug"], "Yes")) ? self::debug : self::no_debug;
 			$this -> log_activated = (0 == strcasecmp($config["sp.activate_log"],"Yes")) ? self::with_log : self::no_log;
-			$this -> default_routes_activated = (0 == strcasecmp($config["sp.default_routes_dump"],"Yes")) ? self::default_routes : self::no_default_routes;
+			//$this -> default_routes_activated = (0 == strcasecmp($config["sp.default_routes_dump"],"Yes")) ? self::default_routes : self::no_default_routes;
 			
 			$this-> template_chunks = array_map("trim",explode(';',$config["sp.override_chunks"]));
 
@@ -168,12 +175,6 @@ class sp_Config
 			return self::cache_force_regen;
 		else
 			return $this -> cache_regen;
-	}
-	
-	public function default_routes_policy()
-	{
-		$this -> LoadConfig();
-		return $this -> default_routes_activated;
 	}
 	
 	public function default_templates_chunks()

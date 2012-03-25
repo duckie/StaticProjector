@@ -405,7 +405,7 @@ class sp_ArrayUtils
 	 * @param string $iFileName
 	 * @param bool $iDebug Activate debug mode (default false)
 	 */
-	public static function store_array(&$iArray, $iFileName, $iDebug = false)
+	public static function store_array($iArray, $iFileName, $iDebug = false)
 	{
 		sp_assert( ! is_dir($iFileName));
 		file_put_contents($iFileName, "<?php \$sp_stored_array=".self::array_as_php_string($iArray, $iDebug).";?>");

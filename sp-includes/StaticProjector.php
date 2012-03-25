@@ -33,6 +33,7 @@ class sp_StaticProjector
 	const defaults_dir = "defaults";
 	const config_file = "config.txt";
 	const log_file = "log.txt";
+	const cache_stamp_file = "cache_stamp.dico";
 	const file_order_name = "_sp_fileorder.txt";
 	const file_metadata_ext = ".txt";
 	const file_metadata_title_field = "title";
@@ -104,7 +105,6 @@ class sp_StaticProjector
 		// First thing to do before modifying anything : computing timestamp
 		// Must be done before any call to log() cause log() may modify this state
 		$cache_gen = new sp_CacheGenerator($this);
-		$cache_gen -> check_current_filesystem_state();
 
 		$this -> log(sp_Logger::info,"Static Projector execution began.");
 		

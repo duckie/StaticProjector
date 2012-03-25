@@ -11,8 +11,8 @@ class sp_FileInfo extends sp_ArrayConvertible
 	public $is_dir;
 	
 	// Rich
-	public $last_modified_timestamp;
-	public $last_modified_date; // Format YYYY-MM-DD-hh:mm:ss
+	public $timestamp_modified;
+	public $date_modified; // Format YYYY-MM-DD-hh:mm:ss
 	
 	// Images
 	public $exif_datetime;
@@ -208,11 +208,11 @@ class sp_FileReader
 		$local_info = new sp_FileInfo();
 		$local_info -> is_dir = is_dir($path);
 		$local_info -> relative_path = null;
+		$local_info -> timestamp_modified = filemtime($path);
 		
 		if($details)
 		{
-			$local_info -> last_modified_timestamp = filemtime($path);
-			$local_info -> last_modified_date = date("Y-m-d-H:i:s", $local_info -> last_modified_timestamp);
+			$local_info -> date_modified = date("Y-m-d-H:i:s", $local_info -> timestamp_modified);
 		}
 		
 		if($local_info -> is_dir)
@@ -241,10 +241,10 @@ class sp_FileReader
 				if(preg_match("/^[jJ][pP][eE]?[gG]$/", $local_info -> extension))
 				{
 					$exif_data =  exif_read_data($path,null,false);
-					$local_info -> exif_datetime = $exif_data["FileDateTime"];
-					$local_info -> exif_title = $exif_data["ImageDescription"];
-					$local_info -> exif_comment = $exif_data["Comments"];
-					$local_info -> exif_tags = explode(";", $exif_data["Keywords"]);
+					$local_info -> exif_datetime = @$exif_data["FileDateTime"];
+					$local_info -> exif_title = @$exif_data["ImageDescription"];
+					$local_info -> exif_comment = @$exif_data["Comments"];
+					$local_info -> exif_tags =  @explode(";", $exif_data["Keywords"]);
 				}
 			}
 			

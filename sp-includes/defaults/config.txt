@@ -6,10 +6,7 @@ website.author = Put your name
 # No - The cache is never generated. To be used when you know what youre doing
 # Auto - The cache is generated when it has to be after a change in the user files
 # Yes - The cache is always rewritten
-sp.regen_cache = Auto
-
-# If activated, a file containing pre-written routes is dumpd
-sp.default_routes_dump = No
+sp.regen_cache = Yes
 
 # Activate logging things : set it to Yes or No
 # Useful for debugging purpose if someting is wrong

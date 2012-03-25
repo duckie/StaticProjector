@@ -15,12 +15,12 @@ class FR01_SimpleVisitor extends sp_FileReaderVisitor
 		$info_array = $iReader -> as_array();
 		
 		// Deleting values which depend of the local computer
-		unset($info_array["absolute_path"]);
-		unset($info_array["last_modified_timestamp"]);
-		unset($info_array["last_modified_date"]);
-		unset($info_array["exif_datetime"]);
+		unset($info_array['absolute_path']);
+		unset($info_array['timestamp_modified']);
+		unset($info_array['date_modified']);
+		unset($info_array['exif_datetime']);
 		
-		fwrite($this -> fp, json_encode($info_array)."\n");
+		fwrite($this -> fp, json_encode($info_array).'\n');
 	}
 }
 
