@@ -23,28 +23,29 @@ class sp_StaticProjector
 	private $resources;
 	private $commands;
 	
-	const version = "0.1";
-	const data_dir = "data";
-	const user_cache_dir = "web-data/data";
-	const config_dir = "web-data";
-	const templates_dir = "web-data/templates";
-	const style_dir = "web-data/styles";
-	const style_file = "style.css";
-	const cache_dir = "cache";
-	const defaults_dir = "defaults";
-	const config_file = "config.txt";
-	const log_file = "log.txt";
-	const cache_stamp_file = "cache_stamp.dico";
-	const file_order_name = "_sp_fileorder.txt";
-	const file_metadata_ext = ".txt";
-	const file_metadata_title_field = "title";
-	const file_metadata_create_field ="timestamp_created";
-	const file_metadata_additional_fields = "link;alt;comment";
-	const dic_file = "db.dico";
-	const routes_file = "routes.txt";
-	const routes_default_file = "routes.default.txt";
-	const routes_dico = "routes.dico";
+	const version = '0.1';
+	const data_dir = 'data';
+	const user_cache_dir = 'web-data/data';
+	const config_dir = 'web-data';
+	const templates_dir = 'web-data/templates';
+	const style_dir = 'web-data/styles';
+	const style_file = 'style.css';
+	const cache_dir = 'cache';
+	const defaults_dir = 'defaults';
+	const config_file = 'config.txt';
+	const log_file = 'log.txt';
+	const cache_stamp_file = 'cache_stamp.dico';
+	const file_order_name = '_sp_fileorder.txt';
+	const file_metadata_ext = '.txt';
+	const file_metadata_title_field = 'title';
+	const file_metadata_create_field ='timestamp_created';
+	const file_metadata_additional_fields = 'link;alt;comment';
+	const dic_file = 'db.dico';
+	const routes_file = 'routes.txt';
+	const routes_default_file = 'routes.default.txt';
+	const routes_dico = 'routes.dico';
 	const exec_dir = __DIR__;
+	const dir_create_rights = 0755;
 
 	/**
 	 * StaticProjector constructor

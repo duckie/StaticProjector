@@ -43,7 +43,7 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 		{
 			// Deleting any occurence of a directory which was a file before
 			if(file_exists($cache_dir)) unlink($cache_dir);
-			@mkdir($cache_dir,null,true);
+			@mkdir($cache_dir,sp_StaticProjector::dir_create_rights,true);
 		}
 		
 		$file_order_name = $cache_dir."/".sp_StaticProjector::file_order_name;
@@ -96,10 +96,11 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 			}
 			else
 			{
+				$previous_cache_list = null;
 				$cache_list = $file_list;
 			}
 			
-			if($previous_cache_list != $cache_list)
+			if($previous_cache_list !== $cache_list)
 				sp_ArrayUtils::store_config(array_values($cache_list),$file_order_name);
 		}
 		
@@ -131,7 +132,7 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 					{
 						// Deleting any occurence of a directory which was a file before
 						if(file_exists($cache_dir)) unlink($cache_dir);
-						@mkdir($cache_dir,null,true);
+						@mkdir($cache_dir,sp_StaticProjector::dir_create_rights,true);
 					}
 				}
 					
@@ -164,7 +165,7 @@ class sp_UserCacheGenerator extends sp_FileReaderVisitor
 						}
 					}
 						
-					if($previous_data != $data)
+					if($previous_data !== $data)
 						sp_ArrayUtils::store_config($data, $meta_file);
 				}
 			}
@@ -257,7 +258,7 @@ class sp_PrivateCacheGenerator extends sp_FileReaderVisitor
 			$this -> debug = (sp_Config::debug == $this -> sp -> get_config() -> debug_mode());
 			if( ! file_exists($this -> cache_dir))
 			{
-				@mkdir($this -> cache_dir, null, true);
+				@mkdir($this -> cache_dir, sp_StaticProjector::dir_create_rights, true);
 				sp_forbid_http_access($this -> cache_dir);
 			}
 			sp_assert(is_dir($this -> cache_dir));
@@ -312,8 +313,7 @@ class sp_CacheGenerator
 			$this -> routes_stamp = $stamp_data[2];
 			
 			$this -> update_user_cache();
-
-			if($this -> cache_stamp < $this -> uc_stamp)
+			if($this -> cache_stamp <= $this -> uc_stamp)
 			{
 				$this -> generate_cache();
 				$this -> cache_stamp = time();
@@ -323,7 +323,7 @@ class sp_CacheGenerator
 			$route_out = $this -> sp -> targetdir().'/'.sp_StaticProjector::cache_dir.'/'.sp_StaticProjector::routes_dico;
 			$current_route_stamp = filemtime($route_in);
 			
-			if($this -> routes_stamp < $current_route_stamp)
+			if($this -> routes_stamp <= $current_route_stamp)
 			{
 				// Parsing routes
 				$routes_data = array();
@@ -340,7 +340,7 @@ class sp_CacheGenerator
 			}
 			
 			$new_stamp = array($this -> uc_stamp, $this -> cache_stamp, $this -> routes_stamp);
-			if($stamp_data != $new_stamp)
+			if($stamp_data !== $new_stamp)
 				sp_ArrayUtils::store_array($new_stamp, $cache_stamp_file);
 		}
 	}

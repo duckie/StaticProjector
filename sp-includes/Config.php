@@ -51,9 +51,8 @@ class sp_Config
 			if(file_exists($iDir))
 			{
 				unlink($iDir);
-			}
-
-			mkdir($iDir,null,true);
+			}	
+			mkdir($iDir,sp_StaticProjector::dir_create_rights,true);
 			$created = true;
 		}
 		
@@ -91,6 +90,8 @@ class sp_Config
 	{
 		if( ! $this -> env_checked)
 		{
+			umask(0000);
+			
 			$uc_cache_created = $this -> mkdir($this->sp->targetdir().'/'.sp_StaticProjector::config_dir);
 			$cache_created = $this -> mkdir($this->sp->targetdir().'/'.sp_StaticProjector::cache_dir);
 			// If the folder has just been created, we need to force cache update
