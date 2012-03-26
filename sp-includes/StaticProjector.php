@@ -45,7 +45,8 @@ class sp_StaticProjector
 	const routes_default_file = 'routes.default.txt';
 	const routes_dico = 'routes.dico';
 	const exec_dir = __DIR__;
-	const dir_create_rights = 0755;
+	const dir_create_rights = 0775;
+	const file_create_rights = 0664;
 
 	/**
 	 * StaticProjector constructor

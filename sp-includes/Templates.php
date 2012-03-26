@@ -30,6 +30,7 @@ class sp_Template
 				{
 					$default_controller = $this -> sp -> defaultsdir()."/default_controller.php";
 					@copy($default_controller, $controller);
+					chmod($controller,sp_StaticProjector::file_create_rights);
 				}
 				else
 				{
@@ -47,6 +48,7 @@ class sp_Template
 				{
 					$default_template = $this -> sp -> defaultsdir()."/default_template.php";
 					@copy($default_template, $template);
+					chmod($template,sp_StaticProjector::file_create_rights);
 				}
 				else
 				{
