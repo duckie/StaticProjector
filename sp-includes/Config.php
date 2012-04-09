@@ -103,6 +103,7 @@ class sp_Config
 			$this -> mkdir($this->sp->targetdir().'/'.sp_StaticProjector::user_cache_dir);
 			$this -> mkdir($this->sp->targetdir().'/'.sp_StaticProjector::templates_dir);
 			$this -> mkdir($this->sp->targetdir().'/'.sp_StaticProjector::style_dir);
+			$this -> mkdir($this->sp->targetdir().'/'.sp_StaticProjector::webcache_dir);
 			
 			$default_config = $this -> sp -> defaultsdir().'/'.sp_StaticProjector::config_file;
 			$dest_config = $this->sp->targetdir().'/'.sp_StaticProjector::config_dir.'/'.sp_StaticProjector::config_file;
@@ -127,6 +128,9 @@ class sp_Config
 			
 			if (! file_exists($this->sp->targetdir().'/'.sp_StaticProjector::style_dir.'/.htaccess'))
 				sp_set_http_granting($this->sp->targetdir().'/'.sp_StaticProjector::style_dir, SP_HTTP_DENY_LISTING);
+			
+			if (! file_exists($this->sp->targetdir().'/'.sp_StaticProjector::webcache_dir.'/.htaccess'))
+				sp_set_http_granting($this->sp->targetdir().'/'.sp_StaticProjector::webcache_dir, SP_HTTP_DENY_LISTING);
 			
 			$this -> env_checked = true;
 		}

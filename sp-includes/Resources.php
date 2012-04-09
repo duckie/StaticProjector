@@ -83,6 +83,47 @@ class sp_ResourceBrowser
 		return $this -> sp -> basedir()."/".sp_StaticProjector::data_dir.$path;
 	}
 	
+	public function get_cached_thumbnail($iResource, $iMaxWidth, $iMaxHeight)
+	{
+		$thumb_relative_dir = '/'.sp_StaticProjector::webcache_dir.dirname($iResource['relative_path']);
+		$thumb_dir = $this -> sp -> basedir().$thumb_relative_dir;
+		$thumb_name = $iResource['basename'].'_'.$iMaxWidth.'_'.$iMaxHeight.'.jpg';
+		$thumb_file = $thumb_dir.'/'.$thumb_name;
+		
+		if(!is_dir($thumb_dir))
+		{
+			@mkdir($thumb_dir,sp_StaticProjector::dir_create_rights,true);
+		}
+		
+		$thumb_stamp = 0;
+		if(file_exists($thumb_file))
+			$thumb_stamp = filemtime($thumb_file);
+		
+		if($thumb_stamp <= $iResource['timestamp_modified'])
+		{			
+			// Get new dimensions
+			list($width_orig, $height_orig) = getimagesize($iResource['absolute_path']);			
+			$ratio_orig = $width_orig/$height_orig;
+			
+			if ($iMaxWidth/$iMaxHeight > $ratio_orig) {
+				$iMaxWidth = $iMaxHeight*$ratio_orig;
+			} else {
+				$iMaxHeight = $iMaxWidth/$ratio_orig;
+			}
+			
+			// Resample
+			$image_p = imagecreatetruecolor($iMaxWidth, $iMaxHeight);
+			$image = imagecreatefromjpeg($iResource['absolute_path']);
+			imagecopyresampled($image_p, $image, 0, 0, 0, 0, $iMaxWidth, $iMaxHeight, $width_orig, $height_orig);
+			
+			// Output
+			imagejpeg($image_p, $thumb_file);
+		}
+		
+		$thumb_url = $this->sp -> baseurl().$thumb_relative_dir.'/'.$thumb_name;
+		return $thumb_url;
+	}
+	
 	public function query_resources(sp_Criterion $iCriterion)
 	{
 		// Filtering
@@ -168,7 +209,7 @@ class sp_ResourceBrowser
 		// Fetching the result
 		$range = $iCriterion -> limits();
 		$range_begin = $range[0];
-		$range_end = (-1 === $range[1]) ? count($result_set) : $range[1];
+		$range_end = (-1 === $range[1]) ? count($result_set) : min(count($result_set),$range[1]);
 		
 		$index = $range_begin;
 		$result = array();
