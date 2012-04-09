@@ -6,3 +6,6 @@
 /web-data
 /data
 /dev/tests/output
+/build
+*~
+

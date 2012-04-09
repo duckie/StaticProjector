@@ -1,11 +1,11 @@
 StaticProjector
 ========
 
-This software is in development and cannot be used for the moment.
+Stay tuned, an howto tutorial is coming soon.
 
 #### Lighweight CMS for geek people needing data freedom and extreme simplicity ####
 
-StaticProjector is a CMS, but if you are lookin for a CMS with shiny themes, dozens on admin panels and plugins, this is the wrong place. StaticProjector is for simple websites you have to create in a hurry and which does not need a so much powerful engine but still need advanced customization about details.
+StaticProjector is a CMS, but if you are looking for a CMS with shiny themes, dozens on admin panels and plugins, this is the wrong place. StaticProjector is for simple websites you have to create in a hurry and which does not need a so much powerful engine but still need advanced customization about details.
 
 StaticProjector is a file-based CMS, which means the administration interface is file edition through FTP, SFTP or SSH, or any method that fits your need. StaticProjector is for advanced users only.
 

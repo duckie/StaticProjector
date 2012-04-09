@@ -14,3 +14,4 @@ The first thing you can try is delete the "Options [...]" line you dont now what
 * _web-data/data/.htaccess_
 
 Please notice that once you modified these files, _Static Projector_ lets them as they are. You dont have to configure anything else.
+
