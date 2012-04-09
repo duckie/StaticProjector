@@ -137,8 +137,29 @@ class sp_Config
 		sp_assert(__FILE__, __LINE__, $this -> env_checked);
 		if( ! $this -> config_loaded)
 		{
-			$this -> config_array = sp_ArrayUtils::load_config( $this->sp->targetdir().'/'.sp_StaticProjector::config_dir.'/'.sp_StaticProjector::config_file );
+			$config_cache  = $this->sp->targetdir().'/'.sp_StaticProjector::cache_dir.'/'.sp_StaticProjector::config_cache;
+			$config_cache_stamp = 0;
+			if(file_exists($config_cache))
+			{
+				$config_cache_stamp = filemtime($config_cache);
+				$this -> config_array = sp_ArrayUtils::load_array($config_cache);
+			}
+			
+			$config_file = $this->sp->targetdir().'/'.sp_StaticProjector::config_dir.'/'.sp_StaticProjector::config_file;
+			$config_stamp = filemtime($config_file);
+			
+			if($config_cache_stamp <= $config_stamp)
+			{
+				$default_config = sp_ArrayUtils::load_config($this -> sp -> defaultsdir().'/'.sp_StaticProjector::config_file);
+				$config = sp_ArrayUtils::load_config($config_file);
+				$this -> config_array = array_merge($default_config,$config);
+				sp_ArrayUtils::store_array($this -> config_array, $config_cache);	
+			}
+			
 			$config = array_map('trim', $this -> config_array);
+			
+			// Time zone setting
+			$timezone_valid = date_default_timezone_set($config['sp.timezone']);
 			
 			if(0 == strcasecmp($config['sp.regen_cache'],'No'))
 				$this -> cache_regen = self::cache_no_regen;
@@ -153,6 +174,10 @@ class sp_Config
 
 			$this -> config_loaded = true;
 			$this -> sp -> log(sp_Logger::info,'Config file loaded.');
+			if(!$timezone_valid)
+			{
+				$this -> sp -> log(sp_Logger::warning,'The time zone '.$config['sp.timezone'].' is invalid.');
+			}
 		}
 	} 
 	

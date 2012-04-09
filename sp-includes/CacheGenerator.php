@@ -294,6 +294,7 @@ class sp_CacheGenerator
 		$sp_cache = new sp_PrivateCacheGenerator($this->sp);
 		$sp_cache -> execute();
 		$this -> sp -> log(sp_Logger::info, "Cache updated.");
+		$this -> cache_stamp = time();
 	}
 	
 	public function run()
@@ -316,7 +317,6 @@ class sp_CacheGenerator
 			if($this -> cache_stamp <= $this -> uc_stamp)
 			{
 				$this -> generate_cache();
-				$this -> cache_stamp = time();
 			}
 
 			$route_in = $this -> sp -> targetdir().'/'.sp_StaticProjector::config_dir.'/'.sp_StaticProjector::routes_file;
