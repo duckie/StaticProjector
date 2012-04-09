@@ -1,7 +1,7 @@
 StaticProjector
 ========
 
-Stay tuned, an howto tutorial is coming soon.
+Stay tuned, an howto tutorial is coming soon. You can download Static Projector [here](https://github.com/downloads/duckie/StaticProjector/StaticProjector-0.1.zip).
 
 #### Lighweight CMS for geek people needing data freedom and extreme simplicity ####
 
