@@ -34,6 +34,7 @@ class sp_StaticProjector
 	const webcache_dir = 'cache/web';
 	const defaults_dir = 'defaults';
 	const config_file = 'config.txt';
+	const config_cache = 'config.dico';
 	const log_file = 'log.txt';
 	const cache_stamp_file = 'cache_stamp.dico';
 	const file_order_name = '_sp_fileorder.txt';

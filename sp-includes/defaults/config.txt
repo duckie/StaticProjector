@@ -15,6 +15,10 @@ sp.activate_log = No
 # The route to be called when the asked one fails
 sp.notfound_route = error404
 
+# Timezone to be used in the php date() function
+# See http://www.php.net/manual/timezones.php to get yours
+sp.timezone = Europe/Berlin
+
 # Debug mode - Some of the internal data are generated in another format. For developers
 sp.debug = No
 
