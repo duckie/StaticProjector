@@ -24,7 +24,7 @@ class sp_Criterion
 	
 	public function add_name($iName)
 	{
-		$this -> add_constraint("relative_path", str_replace("*","(.*)",$iName), self::name_lookup);
+		$this -> add_constraint('relative_path', str_replace('*','(.*)',$iName), self::name_lookup);
 	}
 	
 	public function add_constraint($iAttributeName, $iValue, $iConstraintType = self::equals)
@@ -74,7 +74,7 @@ class sp_ResourceBrowser
 	public function __construct(sp_StaticProjector $iSP)
 	{
 		$this -> sp = $iSP;
-		$this -> db = sp_ArrayUtils::load_array($this -> sp -> targetdir()."/".sp_StaticProjector::cache_dir."/".sp_StaticProjector::dic_file);
+		$this -> db = sp_ArrayUtils::load_array($this -> sp -> targetdir().'/'.sp_StaticProjector::cache_dir.'/'.sp_StaticProjector::dic_file);
 	}
 	
 	public function get_resource_path($iPartialPath)
@@ -199,7 +199,7 @@ class sp_ResourceBrowser
 				$multisort_params[] = $type;
 			}
 			
-			// Adding the data to ve sorted at the end
+			// Adding the data to be sorted at the end
 			$multisort_params[] = &$result_set;
 
 			// Sorting
