@@ -11,8 +11,10 @@ abstract class sp_base_template
 	}
 	
 	/**** MAIN TEMPLATE ****/
-	public function main($iData) { 
-?><!DOCTYPE html>
+	public function main($iData) {
+		echo("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"); 
+?>
+<!DOCTYPE html>
 <html>
 <head>
 <?php sp_insert_chunk("head", $iData); ?>
