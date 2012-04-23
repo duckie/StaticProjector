@@ -37,18 +37,6 @@ abstract class sp_base_controller
 		$this -> redirect = $this -> sp -> get_config() -> get_fail_route();
 	}
 	
-	protected function gather_common_datas(array &$iArrayToStore)
-	{
-		$menu_file = sp_get_resource_path("menu.txt");
-		if(file_exists($menu_file))
-		{
-			$iArrayToStore["menu"] = sp_ArrayUtils::parse_menu($menu_file);
-		}
-		
-		$iArrayToStore["type"] = null;
-		$iArrayToStore["content"] = null;
-	}
-	
 	protected function query(sp_Criterion $iCriterion)
 	{
 		return $this -> get_root() -> resources() -> query_resources($iCriterion);
