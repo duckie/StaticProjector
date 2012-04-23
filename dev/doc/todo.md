@@ -5,5 +5,5 @@
 * Add OR possibility in the resource browsing
 * Correct the // bug
 * Add fancy url rewriting
-* Add fancy error messages to help for installation
+* Add fancy error messages : right to write into /data missing, regexp copil error in routes.txt
 

@@ -1,9 +1,9 @@
 StaticProjector
 ========
 
-Stay tuned, an howto tutorial is coming soon. You can download Static Projector [here](https://github.com/downloads/duckie/StaticProjector/StaticProjector-0.1.zip).
+How to tutorial in progress. You can download Static Projector [here](https://github.com/downloads/duckie/StaticProjector/StaticProjector-0.1.zip).
 
-#### Lighweight CMS for geek people needing data freedom and extreme simplicity ####
+#### What Static Projector is ####
 
 StaticProjector is a CMS, but if you are looking for a CMS with shiny themes, dozens on admin panels and plugins, this is the wrong place. StaticProjector is for simple websites you have to create in a hurry and which does not need a so much powerful engine but still need advanced customization about details.
 
