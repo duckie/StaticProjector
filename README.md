@@ -1,9 +1,9 @@
 StaticProjector
 ========
 
-You can see _Static Projector_ in action on this website : (JMJPhoto)[http://www.jmjphoto.fr]. Please notice this project is still maintained but may not have a lot of recent commits since its stable enough for the current use.
+You can see _Static Projector_ in action on this website : [JMJPhoto](http://www.jmjphoto.fr). Please notice this project is still maintained but may not have a lot of recent commits since its stable enough for the current use.
 
-An "How to" tutorial is in progress, available into the *dev/doc* folder. You can download _Static Projector_ [here](https://github.com/downloads/duckie/StaticProjector/StaticProjector-0.1.zip).
+An "How to" tutorial is in progress, available [here](https://github.com/duckie/StaticProjector/blob/master/dev/doc/tutorial_sp_howto.md). You can download _Static Projector_ [here](https://github.com/downloads/duckie/StaticProjector/StaticProjector-0.1.zip).
 
 #### What Static Projector is ####
 

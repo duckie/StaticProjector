@@ -171,7 +171,7 @@ Then update the page. Your file should have been processed and displayed.
 
 #Step 4: Query the model and add metadata to your data#
 
-## A short example: title to your page ##
+## A short example: title your page ##
 
 When _Static Projector_ generates its cache files, it browses the file tree into *data* and creates another tree into *web-data/data* which is similar. In these auto-generated files, you can add some metadata to help the controllers browse and display correctly the other files. We will use it to make the previous example more like a dynamic page.
 
@@ -187,7 +187,7 @@ Each key beginning by *sp.* is _Static Projector_ reserved. All of them are opti
 
 #### sp.regen_cache ####
 
-Set this value to *Yes* or *No*. The default is *Yes*. When this variable is set, Static Projector will explore *data/* and *web-data/data/* to find changes in it. If you did not make any change, _Static Projector_ will not update anything, but it has to explore to find out. So when you have a stable version of your data and metadata, once the cache is generated, you dont need to generate it again. This is particularly true if you have a lot of files, because browsing them is a time and energy consumer. This is the case on (JMJPhoto)[http://www.jmjphoto.fr] where the cache generation is turned off when there is no maintenance on the website.
+Set this value to *Yes* or *No*. The default is *Yes*. When this variable is set, Static Projector will explore *data/* and *web-data/data/* to find changes in it. If you did not make any change, _Static Projector_ will not update anything, but it has to explore to find out. So when you have a stable version of your data and metadata, once the cache is generated, you dont need to generate it again. This is particularly true if you have a lot of files, because browsing them is a time and energy consumer. This is the case on [JMJPhoto](http://www.jmjphoto.fr) where the cache generation is turned off when there is no maintenance on the website.
 
 I recommend to set it to "Yes" when you do some work into the data and the metadata, then set it back to "No" when you are finished.
 
