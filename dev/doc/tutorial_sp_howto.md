@@ -13,20 +13,20 @@ Note for Linux/Unix users: if you plan to install Static Projector on your local
 
 ##Method 1: from zip archive##
 
-Download the zip file [here](linkto) and uncompress it into a folder.
+Download the zip file [here](https://github.com/downloads/duckie/StaticProjector/StaticProjector-0.1.zip) and uncompress it into a folder.
 
 ##Method 2: from git repository##
 
-__Please be careful__ cause there some steps over just cloning the repository. We suppose you have git installed on your computer and a Unix like shell. If you are running on Windows, we recommend to install [MSys Git](linkto) wich bundles Git and a fully efficient bash shell. Then, by replacing *my_user* by your user name and *my_work_dir* by the name you want, type the following commands:
+__Please be careful__ cause there some steps over just cloning the repository. We suppose you have git installed on your computer and a Unix like shell. If you are running on Windows, we recommend to install [MSys Git](http://msysgit.github.com/) wich bundles Git and a fully efficient bash shell. Then, by replacing *my_user* by your user name and *my_work_dir* by the name you want, type the following commands:
 
 	# mkdir /home/my_user/my_work_dir
 	# cd /home/my_user/my_work_dir
-	# git clone (completeit) StaticProjector
+	# git clone git://github.com/duckie/StaticProjector.git StaticProjector
 	# cd StaticProjector
 	# dev/tools/update-3rd-party.sh
 	# dev/tools/package.sh
 
-Now you have a ready Static Projector into the directory _/home/my_user/my_work_dir/StaticProjector/build/_. This is an important step because of bundled third party softwares needed for Static Projector to work. As of today, the only third party software is the [PHP port](linkto) of [markdown](linkto), which is a very useful piece of software.
+Now you have a ready Static Projector into the directory */home/my_user/my_work_dir/StaticProjector/build/*. This is an important step because of bundled third party softwares needed for Static Projector to work. As of today, the only third party software is the [PHP port](https://github.com/michelf/php-markdown) of [markdown](http://daringfireball.net/projects/markdown/), which is a very useful piece of software.
 
 #Step 2: Get Static Projector to run#
 
@@ -34,7 +34,7 @@ Now you have a ready Static Projector into the directory _/home/my_user/my_work_
 
 You have to upload the directory _sp-includes_ and the file _index.php_ into the web root of the website you want to create. If you want to, you can upload _sp-includes_ into a PHP include dir instead of the web root of the site. By doing this, you can use Static Projector for several websites on one server. You have to give the PHP runtime the right to write into the main folder. If you dont know if this is the case and how to change it, its likely to be already ok with that point.
 
-Create a folder into the web root called _data_. Then open you favorite browser and go on the URL which points to the site: you should see the message "Hello guys !" on a gray background. If you dont have a gray background but a crappy white one, browse the HTML source and try to see the _styles.css_ file. If you cannot, please have a look a the [troubleshot page](linkto) to deal with this issue.
+Create a folder into the web root called _data_. Then open you favorite browser and go on the URL which points to the site: you should see the message "Hello guys !" on a gray background. If you dont have a gray background but a crappy white one, browse the HTML source and try to see the _styles.css_ file. If you cannot, please have a look a the [troubleshot page](https://github.com/duckie/StaticProjector/blob/master/dev/doc/troubleshot.md) to deal with this issue.
 
 ## Display you own "Hello world" ##
 
@@ -102,7 +102,7 @@ The third part is the "replace" part:
 
 	snips/\1.md
 
-It is in fact an optional argument for *preg_replace* (link to PHP doc here) which allows you to process the extracted name directly before the template is executed. This is optional so you could have writen such a thing:
+It is an argument for the route to be processed with [preg_replace](http://www.php.net/manual/en/function.preg-replace.php), which allows you to extract the name directly before the template is executed. This is optional so you could have written such a thing:
 
 	/snippets/([^/]+) -> snippet()
 
@@ -168,3 +168,49 @@ To:
 	<?php
 
 Then update the page. Your file should have been processed and displayed.
+
+#Step 4: Query the model and add metadata to your data#
+
+## A short example: title to your page ##
+
+When _Static Projector_ generates its cache files, it browses the file tree into *data* and creates another tree into *web-data/data* which is similar. In these auto-generated files, you can add some metadata to help the controllers browse and display correctly the other files. We will use it to make the previous example more like a dynamic page.
+
+**Part to be continued**
+
+#Step 5: Mastering the configuration file#
+
+The configuration file is *web-data/config.txt*. It contains a set of *key* = *value* terms.
+
+##_Static Projector_ reserved part##
+
+Each key beginning by *sp.* is _Static Projector_ reserved. All of them are optional since _Static Projector_ gets the value from the default configuration file if you do not provide the value into yours. To get the default config file back, juste delete the config file and update any page in your browser. _Static Projector_ will create it again. A explanation of each key follows.
+
+#### sp.regen_cache ####
+
+Set this value to *Yes* or *No*. The default is *Yes*. When this variable is set, Static Projector will explore *data/* and *web-data/data/* to find changes in it. If you did not make any change, _Static Projector_ will not update anything, but it has to explore to find out. So when you have a stable version of your data and metadata, once the cache is generated, you dont need to generate it again. This is particularly true if you have a lot of files, because browsing them is a time and energy consumer. This is the case on (JMJPhoto)[http://www.jmjphoto.fr] where the cache generation is turned off when there is no maintenance on the website.
+
+I recommend to set it to "Yes" when you do some work into the data and the metadata, then set it back to "No" when you are finished.
+
+#### sp.activate_log ####
+
+Set this value to *Yes* or *No*. The default is *No*. When turned on, the *data/log.txt* file is generated at each page generation. The log file is completely *rewritten* each time. The logs do not stack. It may contain some useful information if you have some problems but most of the time, it is useless. I recommend to set it to *No* unless for debugging problems.
+
+#### sp.notfound_route ####
+
+This value contain the name of the route you _Static Projector_ is required for when you redirect a controller with the *redirect_to_notfound()* method. The default is *error404*.
+
+#### sp.timezone ####
+
+This is the [PHP Time Zone](http://php.net/manual/en/timezones.php) to be used. This is useful for generating a consistent cache regarding the timestamps and the date string you may want to display at some point. The default is *Europe/Berlin*.
+
+#### sp.debug ####
+
+Set this value to *Yes* or *No*. The default is *No*. This is to be used by developers. When set to *Yes*, some cache datas are written in a more readable format.
+
+#### sp.override_chunks ####
+
+This one is pretty special. It contains a list of names serarated by a *;*. These names of those of the template chunks you want _Static Projector_ to override by default when it creates a new template file. This setting is useful when you develop the website and you have several similar templates which inherits from each other. It is an helper which avoids to write too much PHP code. It is not blocking in any way.
+
+##Free part##
+
+The "free" keys are those beginning by *website.*. Those are free because you can add as much keys of this kind as you want. Each will be readable into the controllers and the templates. For example, the key *website.title* will be readable by calling *sp_config_value("title")*.
