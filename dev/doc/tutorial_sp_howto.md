@@ -120,7 +120,7 @@ To:
 	$datas = $iData;
 	return $datas;
 
-The open *snippet_template.php* and change the _content_ method from:
+Then open *snippet_template.php* and change the _content_ method from:
 
 	parent::content($iData);
 
@@ -128,7 +128,7 @@ To:
 
 	print_r($iData);
 
-The return on the web browser, update the page and show the HTML source to see the *print_r* result. This is a PHP tip to get the content of an array. You will something like that:
+Then return on the web browser, update the page and show the HTML source to see the *print_r* result. This is a PHP tip to get the content of an array. You will something like that:
 
 	Array
 	(
