@@ -81,7 +81,7 @@ Suppose you have a bunch of _*.md_ files in a folder and you want the URL _http:
 
 ### Define a route ###
 
-A _route_ is what binds a given URL to a given controller and its corresponding view. The _web-data/routes.txt_ file contains all the routes of your website. Our first job here is to write a line to manage the snippets URL. Write it like that:
+A _route_ is what binds a given URL to a given controller and its corresponding view. The _web-data/routes.txt_ file contains all the routes of your website. Our first job here is to write a line to manage the snippets' URLs. Write it like that:
 
 	/snippets/([^/]+) -> snippet(snips/\1.md)
 
@@ -95,7 +95,7 @@ The second part is the template name part:
 
 	snippet
 
-_Static Projector_ will use it to create to controller and the view.
+_Static Projector_ will use it to create the controller and the view.
 
 
 The third part is the "replace" part:
@@ -128,7 +128,7 @@ To:
 
 	print_r($iData);
 
-The return on the web browser, update the page and show the HTML source to see the *print_r* result. This is a PHP tip to get the content of an array. You will something like that:
+The return on the web browser, update the page and show the HTML source to see the *print_r* result. This is a PHP tip to get the content of an array. You will get something like that:
 
 	Array
 	(
