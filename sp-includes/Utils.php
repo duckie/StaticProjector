@@ -236,7 +236,7 @@ class sp_ArrayUtils
 	 * @param array $iArray
 	 * @return bool
 	 */
-	public function is_multidimensional_array(&$iArray)
+	public static function is_multidimensional_array(&$iArray)
 	{
 		return (2 == self::compute_array_depth($iArray, 2));
 	}
@@ -471,7 +471,7 @@ class sp_ArrayUtils
 	 * 
 	 * @param string $iFileName
 	 */
-	public function load_config($iFileName)
+	public static function load_config($iFileName)
 	{
 		if(sp_debug()) sp_assert(file_exists($iFileName) && ! is_dir($iFileName));
 		$lines = file($iFileName, FILE_IGNORE_NEW_LINES);
