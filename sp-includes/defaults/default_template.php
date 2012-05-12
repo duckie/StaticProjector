@@ -2,6 +2,7 @@
 
 /**** MAIN TEMPLATE ****/
 public function main($iData) {
+	header('Content-type: text/html; charset=UTF-8');
 	echo("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 	?>
 <!DOCTYPE html>
