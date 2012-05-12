@@ -39,7 +39,7 @@ class sp_Template
 					file_put_contents($controller, $controller_code);
 				}
 			}
-			@require_once($controller);
+			require_once($controller);
 
 			$template = $this -> sp -> targetdir()."/".sp_StaticProjector::templates_dir."/".$this->name."_template.php";
 			if(!file_exists($template))
@@ -65,7 +65,7 @@ class sp_Template
 					file_put_contents($template, $template_code);
 				}
 			}
-			@require_once($template);
+			require_once($template);
 			sp_StaticRegister::pop_object("sp");
 			
 			$this -> loaded = true;
