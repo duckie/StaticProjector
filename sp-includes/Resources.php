@@ -71,10 +71,13 @@ class sp_ResourceBrowser
 	private $sp;
 	private $db;
 	
-	public function __construct(sp_StaticProjector $iSP)
+	public function __construct(sp_StaticProjector $iSP, $iAlternativeDB = null)
 	{
 		$this -> sp = $iSP;
-		$this -> db = sp_ArrayUtils::load_array($this -> sp -> targetdir().'/'.sp_StaticProjector::cache_dir.'/'.sp_StaticProjector::dic_file);
+		if(null == $iAlternativeDB)
+			$this -> db = sp_ArrayUtils::load_array($this -> sp -> targetdir().'/'.sp_StaticProjector::cache_dir.'/'.sp_StaticProjector::dic_file);
+		else
+			$this -> db = $iAlternativeDB;
 	}
 	
 	public function get_resource_path($iPartialPath)
