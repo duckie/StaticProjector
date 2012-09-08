@@ -1,6 +1,9 @@
 # Do what you want with this in your templates
 website.title = Static Projector
-website.author = Put your name
+website.author = Put your name here
+
+# Commands - Enables the commands directory
+sp.use_commands = Yes
 
 # Set it to No, Auto or Yes.
 # No - The cache is never generated. To be used when you know what youre doing

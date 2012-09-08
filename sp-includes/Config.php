@@ -18,6 +18,7 @@ class sp_Config
 	private $log_activated;
 	private $default_routes_activated;
 	private $template_chunks;
+	private $use_commands;
 	
 	private $force_update = false;
 	
@@ -172,6 +173,7 @@ class sp_Config
 			
 			$this -> debug_mode = (0 == strcasecmp($config['sp.debug'], 'Yes')) ? self::debug : self::no_debug;
 			$this -> log_activated = (0 == strcasecmp($config['sp.activate_log'],'Yes')) ? self::with_log : self::no_log;
+			$this -> use_commands = (0 == strcasecmp($config['sp.activate_log'],'Yes')) ? true : false;
 			//$this -> default_routes_activated = (0 == strcasecmp($config["sp.default_routes_dump"],"Yes")) ? self::default_routes : self::no_default_routes;
 			
 			$this-> template_chunks = array_map('trim',explode(';',$config['sp.override_chunks']));
@@ -216,6 +218,11 @@ class sp_Config
 	public function default_templates_chunks()
 	{
 		return $this -> template_chunks;		
+	}
+
+	public function use_commands()
+	{
+		return $this -> use_commands;
 	}
 	
 	public function get_value($iKey)

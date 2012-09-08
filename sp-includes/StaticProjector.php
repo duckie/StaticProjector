@@ -1,16 +1,17 @@
 <?php
 
-require_once(__DIR__."/Utils.php");
-require_once(__DIR__."/Config.php");
-require_once(__DIR__."/FileReader.php");
-require_once(__DIR__."/CacheGenerator.php");
-require_once(__DIR__."/Routes.php");
-require_once(__DIR__."/Logger.php");
-require_once(__DIR__."/Resources.php");
-require_once(__DIR__."/StaticRegister.php");
-require_once(__DIR__."/Templates.php");
-require_once(__DIR__."/templates/base_controller.php");
-require_once(__DIR__."/templates/base_template.php");
+require_once(__DIR__.'/Utils.php');
+require_once(__DIR__.'/Commands.php');
+require_once(__DIR__.'/Config.php');
+require_once(__DIR__.'/FileReader.php');
+require_once(__DIR__.'/CacheGenerator.php');
+require_once(__DIR__.'/Routes.php');
+require_once(__DIR__.'/Logger.php');
+require_once(__DIR__.'/Resources.php');
+require_once(__DIR__.'/StaticRegister.php');
+require_once(__DIR__.'/Templates.php');
+require_once(__DIR__.'/templates/base_controller.php');
+require_once(__DIR__.'/templates/base_template.php');
 
 class sp_StaticProjector
 {
@@ -22,9 +23,11 @@ class sp_StaticProjector
 	private $logger;
 	private $resources;
 	private $routes;
-	
-	const version = '0.1';
+	private $commands;
+
+	const version = '0.1'; 
 	const data_dir = 'data';
+	const remote_dir = 'commands'; // Remote here is about the tool to send SP some commands, like a TV remote
 	const user_cache_dir = 'web-data/data';
 	const config_dir = 'web-data';
 	const templates_dir = 'web-data/templates';
@@ -69,6 +72,7 @@ class sp_StaticProjector
 		$this -> logger = new sp_Logger($this);
 		$this -> routes = new sp_Routes($this);
 		$this -> resources = null;
+		$this -> commands = null;
 	}
 	
 	public function get_config()
@@ -107,6 +111,12 @@ class sp_StaticProjector
 		
 		//set_include_path(get_include_path() . PATH_SEPARATOR . $this->basedir()."/".self::templates_dir);
 		sp_StaticRegister::push_object("debug_state", sp_Config::debug == $this -> config -> debug_mode());
+
+		// Executes the commands if configured to do so
+		if($this -> config -> use_commands())
+		{
+			$this -> commands = new sp_Remote($this);
+		}
 		
 		// First thing to do before modifying anything : computing timestamp
 		// Must be done before any call to log() cause log() may modify this state
@@ -145,7 +155,6 @@ class sp_StaticProjector
 		}
 		else
 		{
-			;
 			$this -> log(sp_Logger::error, 'No route found for '.$this -> request.'.');
 		}
 	}

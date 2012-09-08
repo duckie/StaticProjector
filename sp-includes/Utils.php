@@ -51,6 +51,14 @@ function sp_filter_path($iPath)
 }
 
 /**
+* Concatenate arguments to create a file path
+*/
+function sp_file()
+{
+	return implode('/',func_get_args());
+}
+
+/**
  * Returns true if a static projector is currently running in debug mode
  * 
  * @return bool
