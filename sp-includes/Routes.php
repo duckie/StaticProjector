@@ -1,6 +1,6 @@
 <?php 
 
-class sp_Commands
+class sp_Routes
 {
 	private $sp;
 	private $success = false;
@@ -24,12 +24,12 @@ class sp_Commands
 		//preg_replace("#^/*([^/]*)((/[^/]+)*)(/*)$#", "/$1$2", $iRequest);
 		//if(empty($request)) $request = "/";
 		
-		$routes = sp_ArrayUtils::load_array($this -> sp -> targetdir()."/".sp_StaticProjector::cache_dir."/".sp_StaticProjector::routes_dico);
+		$routes = sp_ArrayUtils::load_array($this -> sp -> targetdir().'/'.sp_StaticProjector::cache_dir.'/'.sp_StaticProjector::routes_dico);
 		foreach ($routes as $route_data)
 		{
-			$route = $route_data["route"];
-			$template = $route_data["template"];
-			$replace_pattern = $route_data["replace_pattern"];
+			$route = $route_data['route'];
+			$template = $route_data['template'];
+			$replace_pattern = $route_data['replace_pattern'];
 			
 			$matches = array();
 
