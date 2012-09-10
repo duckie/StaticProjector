@@ -115,7 +115,8 @@ class sp_StaticProjector
 		// Executes the commands if configured to do so
 		if($this -> config -> use_commands())
 		{
-			$this -> commands = new sp_Remote($this);
+			$this -> commands = new sp_Remote($this,$this -> config);
+			$this -> commands -> execute_commands();
 		}
 		
 		// First thing to do before modifying anything : computing timestamp
