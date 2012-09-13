@@ -11,22 +11,9 @@ Note for Linux/Unix users: if you plan to install Static Projector on your local
 
 #Step 1: Getting StaticProjector#
 
-##Method 1: from zip archive##
+Just get it from the repository:
 
-Download the zip file [here](https://github.com/downloads/duckie/StaticProjector/StaticProjector-0.1.zip) and uncompress it into a folder.
-
-##Method 2: from git repository##
-
-__Please be careful__ cause there some steps over just cloning the repository. We suppose you have git installed on your computer and a Unix like shell. If you are running on Windows, we recommend to install [MSys Git](http://msysgit.github.com/) wich bundles Git and a fully efficient bash shell. Then, by replacing *my_user* by your user name and *my_work_dir* by the name you want, type the following commands:
-
-	# mkdir /home/my_user/my_work_dir
-	# cd /home/my_user/my_work_dir
 	# git clone git://github.com/duckie/StaticProjector.git StaticProjector
-	# cd StaticProjector
-	# dev/tools/update-3rd-party.sh
-	# dev/tools/package.sh
-
-Now you have a ready Static Projector into the directory */home/my_user/my_work_dir/StaticProjector/build/*. This is an important step because of bundled third party softwares needed for Static Projector to work. As of today, the only third party software is the [PHP port](https://github.com/michelf/php-markdown) of [markdown](http://daringfireball.net/projects/markdown/), which is a very useful piece of software.
 
 #Step 2: Get Static Projector to run#
 

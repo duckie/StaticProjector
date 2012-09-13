@@ -1,6 +1,6 @@
 <?php 
 
-require_once(__DIR__."/third-party/php-markdown/markdown.php");
+require_once(__DIR__."/Markdown.php");
 
 class sp_Template
 {

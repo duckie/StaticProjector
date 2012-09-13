@@ -28,7 +28,7 @@ class sp_Remote
 			mkdir($this -> cmd_dir,sp_StaticProjector::dir_create_rights,true);
 			foreach ($this -> commands as $file)
 			{
-				$file_path = sp_file($cmd_dir, $file);
+				$file_path = sp_file($this -> cmd_dir, $file);
 				file_put_contents($file_path,'# Nothing to do here');
 				chmod($file_path,sp_StaticProjector::file_create_rights);
 			}
