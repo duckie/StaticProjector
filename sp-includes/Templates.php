@@ -5,15 +5,23 @@ require_once(__DIR__."/Markdown.php");
 class sp_Template
 {
 	private $sp;
+	private $config;
+	private $enable_fancy_urls;
 	private $name;
 	private $loaded = false;
 	
-	public function __construct(sp_StaticProjector $iSP, $iName)
+	public function __construct(sp_StaticProjector $iSP, $iFancyUrls, $iName)
 	{
 		$this -> sp = $iSP;
+		$this -> enable_fancy_urls = $iFancyUrls;
 		$this -> name = $iName;
 	}
 	
+	public function fancy_urls_enabled()
+	{
+		return $this -> enable_fancy_urls;
+	}
+
 	/**
 	 * This function searches for the given template and creates it if it does not exist
 	 */
@@ -79,6 +87,7 @@ class sp_Template
 	
 	public function render($iData)
 	{
+		sp_StaticRegister::push_object("renderer",$this);
 		$this -> load_template();
 		$controller_name = $this->name."_controller";
 		$controller = new $controller_name($this -> sp, $this -> name);
@@ -95,6 +104,7 @@ class sp_Template
 		{
 			$this -> sp -> execute_request($redirect);
 		}
+		sp_StaticRegister::pop_object("renderer");
 	}
 
 }
@@ -102,7 +112,8 @@ class sp_Template
 function sp_require_template($iName)
 {
 	$sp = sp_StaticRegister::get_object("sp");
-	$template = new sp_Template($sp, $iName);
+	$renderer = sp_StaticRegister::get_object("renderer");
+	$template = new sp_Template($sp, $renderer -> fancy_urls_enabled(), $iName);
 	$template -> load();
 }
 
@@ -143,9 +154,10 @@ function sp_link($iUrl, $iText, $iCSSClass = null)
 function sp_url($iRequest)
 {
 	$sp = sp_StaticRegister::get_object("sp");
+	$tmpl = sp_StaticRegister::get_object("renderer");
 	if(preg_match("#^https?:\/\/#", $iRequest))
 		return $iRequest;
 	else
-		return $sp -> baseurl()."/index.php".sp_filter_path($iRequest);
+		return $sp -> baseurl().($tmpl -> fancy_urls_enabled() ? '' : "/index.php").sp_filter_path($iRequest);
 }
 

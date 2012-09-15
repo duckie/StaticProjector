@@ -255,7 +255,7 @@ class sp_PrivateCacheGenerator extends sp_FileReaderVisitor
 	{
 		if( ! $this -> is_processed())
 		{				
-			$this -> debug = (sp_Config::debug == $this -> sp -> get_config() -> debug_mode());
+			$this -> debug = $this -> sp -> get_config() -> debug_enabled();
 			if( ! file_exists($this -> cache_dir))
 			{
 				@mkdir($this -> cache_dir, sp_StaticProjector::dir_create_rights, true);
@@ -299,8 +299,8 @@ class sp_CacheGenerator
 	
 	public function run()
 	{
-		$cache_gen_policy = $this -> sp -> get_config() -> cache_policy();
-		if(sp_Config::cache_no_regen != $cache_gen_policy)
+		$cache_gen_policy = $this -> sp -> get_config() -> cache_regen_request();
+		if($cache_gen_policy)
 		{
 			$stamp_data = array(0,0,0);
 			$cache_stamp_file = $this -> sp -> targetdir().'/'.sp_StaticProjector::cache_dir.'/'.sp_StaticProjector::cache_stamp_file;

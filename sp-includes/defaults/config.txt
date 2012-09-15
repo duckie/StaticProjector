@@ -18,6 +18,11 @@ sp.activate_log = No
 # The route to be called when the asked one fails
 sp.notfound_route = error404
 
+# Fancy URLs : You can enable fancy urls if your web host supports them
+# You get http://www.yoursite.com/mypenguinsphoto/madpenguin2 instead of http://www.yoursite.com/index.php/mypenguinsphoto/madpenguin2
+# If you are not sure, you can try to turn in on and get it back off if a problem occurs
+sp.enable_fancy_urls = No
+
 # Timezone to be used in the php date() function
 # See http://www.php.net/manual/timezones.php to get yours
 sp.timezone = Europe/Berlin

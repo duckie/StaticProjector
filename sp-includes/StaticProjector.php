@@ -66,8 +66,8 @@ class sp_StaticProjector
 	{
 		$this -> basedir = str_replace("\\", "/", $iBasedir);
 		$this -> targetdir = str_replace("\\", "/", $iTargetDir);
-		$this -> baseurl = $iBaseUrl;
-		$this -> request = $iRequest;
+		$this -> baseurl = ('/' === substr($iBaseUrl, strlen($iBaseUrl)-1)) ? substr($iBaseUrl,0, strlen($iBaseUrl)-1) : iBaseUrl;
+		$this -> request = sp_filter_path(preg_replace('#^/?index\.php#', '', $iRequest));
 		$this -> config = new sp_Config($this);
 		$this -> logger = new sp_Logger($this);
 		$this -> routes = new sp_Routes($this);
@@ -110,7 +110,7 @@ class sp_StaticProjector
 		if( ! is_dir($data_dir)) $this -> log(sp_Logger::fatal, "Data dir $data_dir not found.");
 		
 		//set_include_path(get_include_path() . PATH_SEPARATOR . $this->basedir()."/".self::templates_dir);
-		sp_StaticRegister::push_object("debug_state", sp_Config::debug == $this -> config -> debug_mode());
+		sp_StaticRegister::push_object("debug_state", $this -> config -> debug_enabled());
 
 		// Executes the commands if configured to do so
 		if($this -> config -> use_commands())
@@ -148,7 +148,7 @@ class sp_StaticProjector
 		if($success)
 		{
 			$template = $this -> routes -> get_template();
-			$renderer = new sp_Template($this, $template);
+			$renderer = new sp_Template($this, $this->config->fancy_urls_enabled(), $template);
 				
 			sp_StaticRegister::push_object('sp', $this);
 			$data = $renderer -> render($this -> routes -> get_command_data());
@@ -173,7 +173,7 @@ class sp_StaticProjector
 	 */
 	public function log($iLevel, $iMessage)
 	{
-		if( sp_Config::with_log == $this -> config -> log_status() )
+		if( sp_Config::with_log == $this -> config -> log_enabled() )
 		{
 			$this -> logger -> log($iLevel, $iMessage);
 			if(sp_Logger::fatal == $iLevel)

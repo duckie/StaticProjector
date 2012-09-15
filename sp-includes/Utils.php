@@ -27,7 +27,7 @@ function sp_set_http_granting($iDirectoryName, $iGrant)
 {
 	sp_assert(is_dir($iDirectoryName));
 	if(SP_HTTP_NO_RULE == $iGrant)
-		file_put_contents("$iDirectoryName/.htaccess", "");
+		file_put_contents("$iDirectoryName/.htaccess", '');
 	else if(SP_HTTP_ALLOW_ACCESS == $iGrant)
 		file_put_contents("$iDirectoryName/.htaccess", "allow from all\nOptions +Indexes\n");
 	else if(SP_HTTP_DENY_LISTING == $iGrant)
@@ -44,10 +44,11 @@ function sp_set_http_granting($iDirectoryName, $iGrant)
  */
 function sp_filter_path($iPath)
 {
-	$request = preg_replace("#^/*([^/](.*))?$#", "/$1", $iPath);
-	$request = preg_replace("#^((.*)[^/])?/*$#", "$1", $request);
-	if(empty($request)) $request = "/";
-	return $request;
+	if('/' === $iPath) return '/';
+	if('/' === substr($iPath, strlen($iPath)-1)) $iPath = substr($iPath,0, strlen($iPath)-1);
+	if(empty($iPath)) $iPath = '/';
+	if('/' !== substr($iPath, 0, 1)) $iPath = '/'.$iPath;
+	return $iPath;
 }
 
 /**
@@ -219,7 +220,7 @@ class sp_ArrayUtils
 		if(!is_array($iArray) || 0 >= $iCurrentDepthAndLevel[1]) return 0;
 		$iCurrentDepthAndLevel[0] += 1;
 		$iCurrentDepthAndLevel[1] -= 1;
-		$result = array_reduce($iArray, "sp_ArrayUtils::compute_array_depth_cb1", $iCurrentDepthAndLevel);
+		$result = array_reduce($iArray, 'sp_ArrayUtils::compute_array_depth_cb1', $iCurrentDepthAndLevel);
 		return $result[0];
 	}
 	
@@ -368,16 +369,16 @@ class sp_ArrayUtils
 		if(!is_array($iArray))
 		{
 			if(null === $iArray)
-				return "null";
+				return 'null';
 			else if(is_numeric($iArray))
 				return $iArray;
 			else if(is_bool($iArray))
-				return $iArray ? "true" : "false";
+				return $iArray ? 'true' : 'false';
 			else
-				return "\"".addslashes($iArray)."\"";
+				return '"'.addslashes($iArray).'"';
 		}
 
-		$debug_char = $iDebug ? "\n" : "";
+		$debug_char = $iDebug ? "\n" : '';
 		$output = "array($debug_char";
 		$first = true;
 		if(self::is_assoc_array($iArray))
@@ -385,7 +386,7 @@ class sp_ArrayUtils
 			foreach($iArray as $key => $elem)
 			{
 				if(!$first) $output.=",$debug_char";
-				$container_char = is_numeric($key) ? "" : "\"";
+				$container_char = is_numeric($key) ? '' : '"';
 				$output .= "$container_char$key$container_char=>".self::array_as_php_string($elem, $iDebug, $iRecurseLevel - 1);
 				$first = false;
 			}
@@ -455,7 +456,7 @@ class sp_ArrayUtils
 		{
 			foreach($iArray as $key => $value)
 			{
-				$key_ok = preg_match("#^[a-zA-Z0-9\.\-_]+$#",$key);
+				$key_ok = preg_match('#^[a-zA-Z0-9\.\-_]+$#',$key);
 				sp_assert($key_ok);
 				if($key_ok)
 					fwrite($fp,"$key=$value\n");
@@ -490,7 +491,7 @@ class sp_ArrayUtils
 			if( (!empty($line)) && ! preg_match("/^#/", $line))
 			{
 				$matches = array();
-				if(preg_match("#^\s*([a-zA-Z0-9\.\-_]+)\s*=(.*)$#",$line,$matches))
+				if(preg_match('#^\s*([a-zA-Z0-9\.\-_]+)\s*=(.*)$#',$line,$matches))
 				{
 					$key = $matches[1];
 					$value = $matches[2];
@@ -541,16 +542,16 @@ class sp_ArrayUtils
 			{
 				$current_key = $key_path[$index];
 				if( ! key_exists($current_key, $current_tab))
-					$current_tab[$current_key] = array("name"=>$current_key,"link" => "", "children" => array());
+					$current_tab[$current_key] = array('name'=>$current_key,'link' => '', 'children' => array());
 				
 				if($path_size - 1 == $index)
 				{
-					$current_tab[$current_key]["name"] = $item_name;
-					$current_tab[$current_key]["link"] = $item_link;
+					$current_tab[$current_key]['name'] = $item_name;
+					$current_tab[$current_key]['link'] = $item_link;
 				}
 				else
 				{
-					$current_tab = &$current_tab[$current_key]["children"];
+					$current_tab = &$current_tab[$current_key]['children'];
 				}
 			}
 		}

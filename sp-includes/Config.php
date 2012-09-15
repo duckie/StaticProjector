@@ -19,6 +19,7 @@ class sp_Config
 	private $default_routes_activated;
 	private $template_chunks;
 	private $use_commands;
+	private $fancy_urls;
 	
 	private $force_update = false;
 	
@@ -158,25 +159,34 @@ class sp_Config
 				$default_config = sp_ArrayUtils::load_config($this -> sp -> defaultsdir().'/'.sp_StaticProjector::config_file);
 				$config = sp_ArrayUtils::load_config($config_file);
 				$this -> config_array = array_merge($default_config,$config);
+				$dest_array = array();
+				foreach($this -> config_array as $key => $value)
+				{
+					if('sp.' === substr($key, 0, 3))
+					{
+						$value = trim($value);
+						if( 0 === strcasecmp($value,'Yes') || 0 === strcasecmp($value,'No'))
+						{
+							$value = (0 === strcasecmp($value,'Yes'));
+						}
+					}
+					$dest_array[$key] = $value;
+				}
+				$this -> config_array = $dest_array;
 				sp_ArrayUtils::store_array($this -> config_array, $config_cache);	
 			}
 			
-			$config = array_map('trim', $this -> config_array);
+			$config = $this -> config_array;
 			
 			// Time zone setting
 			$timezone_valid = date_default_timezone_set($config['sp.timezone']);
 			
-			if(0 == strcasecmp($config['sp.regen_cache'],'No'))
-				$this -> cache_regen = self::cache_no_regen;
-			else
-				$this -> cache_regen = self::cache_force_regen;
-			
-			$this -> debug_mode = (0 == strcasecmp($config['sp.debug'], 'Yes')) ? self::debug : self::no_debug;
-			$this -> log_activated = (0 == strcasecmp($config['sp.activate_log'],'Yes')) ? self::with_log : self::no_log;
-			$this -> use_commands = (0 == strcasecmp($config['sp.use_commands'],'Yes')) ? true : false;
-			//$this -> default_routes_activated = (0 == strcasecmp($config["sp.default_routes_dump"],"Yes")) ? self::default_routes : self::no_default_routes;
-			
-			$this-> template_chunks = array_map('trim',explode(';',$config['sp.override_chunks']));
+			$this -> cache_regen = $config['sp.regen_cache'];
+			$this -> debug_mode = $config['sp.debug'];
+			$this -> log_activated = $config['sp.activate_log'];
+			$this -> use_commands = $config['sp.use_commands'];			
+			$this -> template_chunks = array_map('trim',explode(';',$config['sp.override_chunks']));
+			$this -> fancy_urls = $config['sp.enable_fancy_urls'];
 
 			$this -> config_loaded = true;
 			$this -> sp -> log(sp_Logger::info,'Config file loaded.');
@@ -194,23 +204,23 @@ class sp_Config
 	}
 	
 	
-	public function debug_mode()
+	public function debug_enabled()
 	{
 		$this -> LoadConfig();
 		return $this -> debug_mode;
 	}
 	
-	public function log_status()
+	public function log_enabled()
 	{
 		$this -> LoadConfig();
 		return $this -> log_activated;
 	}
 	
-	public function cache_policy()
+	public function cache_regen_request()
 	{
 		$this -> LoadConfig();
 		if($this -> force_update)
-			return self::cache_force_regen;
+			return true;
 		else
 			return $this -> cache_regen;
 	}
@@ -218,6 +228,11 @@ class sp_Config
 	public function default_templates_chunks()
 	{
 		return $this -> template_chunks;		
+	}
+
+	public function fancy_urls_enabled()
+	{
+		return $this -> fancy_urls;
 	}
 
 	public function use_commands()
