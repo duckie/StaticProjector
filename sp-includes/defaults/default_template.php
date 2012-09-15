@@ -32,6 +32,7 @@ public function main($iData) {
 	public function head($iData)
 	{
 ?><title><?php echo(sp_config_value("title"));?></title>
+<link rel="icon" type="image/x-icon" href="<?php echo(sp_resource_url("favicon.png"))?>" />
 <link href="<?php echo(sp_resource_url("web-data/styles/style.css"))?>" rel="stylesheet" type="text/css" /> <?php
 	}
 

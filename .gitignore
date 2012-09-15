@@ -1,7 +1,7 @@
 .buildpath
-.htaccess
 .project
 .settings
+/build
 /cache
 /web-data
 /data

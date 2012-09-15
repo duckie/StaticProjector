@@ -1,0 +1,15 @@
+# URL Rewriting for fancy URLs
+
+<IfModule mod_rewrite.c>
+
+#Options +FollowSymLinks
+RewriteEngine on
+RewriteBase /
+
+RewriteCond $0 !^web-data
+RewriteCond $0 !^data
+RewriteCond $0 !^cache
+RewriteCond $0 !^(index\.php|favicon\.png|robots\.txt)
+RewriteRule .* index.php [L]
+
+</IfModule>
