@@ -96,8 +96,9 @@ class sp_Config
 			
 			$uc_cache_created = $this -> mkdir($this->sp->targetdir().'/'.sp_StaticProjector::config_dir);
 			$cache_created = $this -> mkdir($this->sp->targetdir().'/'.sp_StaticProjector::cache_dir);
+      $cache_db_missing = !file_exists($this -> sp -> targetdir().'/'.sp_StaticProjector::cache_dir.'/'.sp_StaticProjector::dic_file);
 			// If the folder has just been created, we need to force cache update
-			if($uc_cache_created || $cache_created)
+			if($uc_cache_created || $cache_created || $cache_db_missing)
 			{
 				$this -> force_update = true;
 			}
