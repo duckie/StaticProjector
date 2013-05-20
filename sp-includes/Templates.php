@@ -144,6 +144,7 @@ function sp_resource_url($iRequest)
 {
 	$sp = sp_StaticRegister::get_object("sp");
 	$tmpl = sp_StaticRegister::get_object("renderer");
+	#return ($tmpl -> fancy_urls_enabled() ? '' : $sp -> baseurl()).sp_filter_path($iRequest);	
 	return ($tmpl -> fancy_urls_enabled() ? '' : $sp -> baseurl()).sp_filter_path($iRequest);	
 }
 
@@ -159,6 +160,6 @@ function sp_url($iRequest)
 	if(preg_match("#^https?:\/\/#", $iRequest))
 		return $iRequest;
 	else
-		return ($tmpl -> fancy_urls_enabled() ? '' : $sp -> baseurl()."/index.php").sp_filter_path($iRequest);
+		return ($tmpl -> fancy_urls_enabled() ? '' : $sp -> baseurl()."/?").sp_filter_path($iRequest);
 }
 

@@ -44,6 +44,7 @@ function sp_set_http_granting($iDirectoryName, $iGrant)
  */
 function sp_filter_path($iPath)
 {
+  $iPath = preg_replace("#^/\?#", "", $iPath);
 	if('/' === $iPath) return '/';
 	if('/' === substr($iPath, strlen($iPath)-1)) $iPath = substr($iPath,0, strlen($iPath)-1);
 	if(empty($iPath)) $iPath = '/';
