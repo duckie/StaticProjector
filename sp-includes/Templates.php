@@ -163,3 +163,12 @@ function sp_url($iRequest)
 		return ($tmpl -> fancy_urls_enabled() ? '' : $sp -> baseurl()."/?").sp_filter_path($iRequest);
 }
 
+function sp_debug_enabled() {
+  return sp_debug();
+}
+
+function sp_log_list() {
+	$sp = sp_StaticRegister::get_object("sp");
+  return $sp->log_list();
+}
+

@@ -11,6 +11,7 @@ public function main($iData) {
 <?php sp_insert_chunk("head", $iData); ?>
 </head>
 <body>
+<?php if(sp_debug_enabled()) sp_insert_chunk("debug_frame", sp_log_list());?>
 <div id="body">
 <div id="header">
 <div id="banner"><?php sp_insert_chunk("banner", $iData);?></div>
@@ -88,5 +89,20 @@ Hello guys !
 <?php 
 }
 
+/**** DEBUG FRAME ****/
+public function debug_frame($log_list) {
+?><div id="debug_frame">
+<?php echo(($log_list === null)); ?>
+<?php foreach($log_list as $log_elem): 
+$level = $log_elem['level'];
+if("[info] " !== $level):
+?>
+<div class="log_elem">
+<?php echo("<span class=\"log_$level\">$level</span>"); ?> -- <span class="log_file"><?php echo($log_elem['file']); ?></span>:<span class="log_line"><?php echo($log_elem['line']); ?></span>
+<div><?php echo($log_elem['data']); ?></div>
+</div>
+<?php endif; endforeach;?>
+</div><?php
+}
 
 }?>

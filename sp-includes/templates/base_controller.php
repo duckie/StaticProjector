@@ -41,6 +41,10 @@ abstract class sp_base_controller
 	{
 		return $this -> get_root() -> resources() -> query_resources($iCriterion);
 	}
+  
+  protected function log($iLevel, $iMessage) {
+    $this -> get_root() -> log($iLevel, $iMessage);
+  }
 	
 	abstract public function execute($iData);
 }

@@ -111,6 +111,7 @@ class sp_StaticProjector
 		
 		//set_include_path(get_include_path() . PATH_SEPARATOR . $this->basedir()."/".self::templates_dir);
 		sp_StaticRegister::push_object("debug_state", $this -> config -> debug_enabled());
+    $this -> logger -> set_debug_enabled($this-> config -> debug_enabled());
 
 		// Executes the commands if configured to do so
 		if($this -> config -> use_commands())
@@ -122,7 +123,6 @@ class sp_StaticProjector
 		// First thing to do before modifying anything : computing timestamp
 		// Must be done before any call to log() cause log() may modify this state
 		$cache_gen = new sp_CacheGenerator($this);
-
 		$this -> log(sp_Logger::info,"Static Projector execution began.");
 		
 		// Generating the caches
@@ -182,4 +182,16 @@ class sp_StaticProjector
 			}
 		}
 	}
+
+  /**
+  * Returns a list of logged message il debug si enabled(), null otherwise
+  */
+  public function log_list() {
+		if( sp_Config::with_log == $this -> config -> log_enabled() ) {
+			return $this -> logger -> log_list();
+		}
+    else {
+      return null;
+    }
+  }
 }
