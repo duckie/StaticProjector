@@ -12,14 +12,15 @@ class sp_Logger
 {
 	private $sp = null;
 	private $fp = 0;
-	private $tag_mapper = array("[info] ", "[warning] ", "[error] ", "[fatal] ");
+	private $tag_mapper = array("[debug]","[info] ", "[warning] ", "[error] ", "[fatal] ");
   private $log_list = null;
 	
 	
-	const info = 0;
-	const warning = 1;
-	const error = 2;
-	const fatal = 3;
+	const debug = 0;
+	const info = 1;
+	const warning = 2;
+	const error = 3;
+	const fatal = 4;
 	
 	/**
 	 * Class constructor takes a reference of the main StaticProjector

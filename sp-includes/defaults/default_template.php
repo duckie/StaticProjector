@@ -95,13 +95,11 @@ public function debug_frame($log_list) {
 <?php echo(($log_list === null)); ?>
 <?php foreach($log_list as $log_elem): 
 $level = $log_elem['level'];
-if("[info] " !== $level):
 ?>
 <div class="log_elem">
-<?php echo("<span class=\"log_$level\">$level</span>"); ?> -- <span class="log_file"><?php echo($log_elem['file']); ?></span>:<span class="log_line"><?php echo($log_elem['line']); ?></span>
-<div><?php echo($log_elem['data']); ?></div>
+<?php echo("<span class=\"log_$level\">$level</span>"); ?> -- <span class="log_msg"><?php echo($log_elem['data']); ?></span>
 </div>
-<?php endif; endforeach;?>
+<?php endforeach;?>
 </div><?php
 }
 

@@ -126,7 +126,9 @@ class sp_StaticProjector
 		$this -> log(sp_Logger::info,"Static Projector execution began.");
 		
 		// Generating the caches
+    sp_StaticRegister::push_object('sp', $this);
 		$cache_gen -> run();
+    sp_StaticRegister::pop_object('sp');
 		
 		// Loading resources
 		$this -> resources = new sp_ResourceBrowser($this);

@@ -86,7 +86,7 @@ class sp_ResourceBrowser
 		return $this -> sp -> basedir()."/".sp_StaticProjector::data_dir.$path;
 	}
 	
-	public function get_cached_thumbnail($iResource, $iMaxWidth, $iMaxHeight)
+	public function get_cached_thumbnail($iResource, $iMaxWidth, $iMaxHeight, $keep_ratio = true)
 	{
 		$thumb_relative_dir = '/'.sp_StaticProjector::webcache_dir.dirname($iResource['relative_path']);
 		$thumb_dir = $this -> sp -> basedir().$thumb_relative_dir;
@@ -105,14 +105,16 @@ class sp_ResourceBrowser
 		if($thumb_stamp <= $iResource['timestamp_modified'])
 		{			
 			// Get new dimensions
-			list($width_orig, $height_orig) = getimagesize($iResource['absolute_path']);			
-			$ratio_orig = $width_orig/$height_orig;
-			
-			if ($iMaxWidth/$iMaxHeight > $ratio_orig) {
-				$iMaxWidth = $iMaxHeight*$ratio_orig;
-			} else {
-				$iMaxHeight = $iMaxWidth/$ratio_orig;
-			}
+      list($width_orig, $height_orig) = getimagesize($iResource['absolute_path']);			
+      if($keep_ratio) {
+        $ratio_orig = $width_orig/$height_orig;
+        
+        if ($iMaxWidth/$iMaxHeight > $ratio_orig) {
+          $iMaxWidth = $iMaxHeight*$ratio_orig;
+        } else {
+          $iMaxHeight = $iMaxWidth/$ratio_orig;
+        }
+      }
 			
 			// Resample
 			$image_p = imagecreatetruecolor($iMaxWidth, $iMaxHeight);

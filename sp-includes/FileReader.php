@@ -18,7 +18,9 @@ class sp_FileInfo extends sp_ArrayConvertible
 	public $exif_datetime;
 	public $exif_title;
 	public $exif_comment;
-	public $exif_tags;	
+	public $exif_tags;
+  public $width;
+  public $height;	
 }
 
 abstract class sp_FileReaderVisitor
@@ -235,16 +237,20 @@ class sp_FileReader
 			$local_info -> basename = isset($matches[1][0]) ? $matches[1][0] : "";
 			$local_info -> extension = isset($matches[2][0]) ? $matches[2][0] : "";
 			
-			if($details)
+      if(preg_match("/^[jJ][pP][eE]?[gG]$/", $local_info -> extension))
 			{
+        list($width_orig, $height_orig) = getimagesize($local_info->absolute_path);
+        $local_info->width = $width_orig;
+        $local_info->height = $height_orig;			
+
 				// JPEG image got exifs info
-				if(preg_match("/^[jJ][pP][eE]?[gG]$/", $local_info -> extension))
+        if($details)
 				{
-					$exif_data =  exif_read_data($path,null,false);
-					$local_info -> exif_datetime = @$exif_data["FileDateTime"];
-					$local_info -> exif_title = @$exif_data["ImageDescription"];
-					$local_info -> exif_comment = @$exif_data["Comments"];
-					$local_info -> exif_tags =  @explode(";", $exif_data["Keywords"]);
+					$exif_data = exif_read_data($path,null,false);
+					$local_info->exif_datetime = @$exif_data["FileDateTime"];
+					$local_info->exif_title = @$exif_data["ImageDescription"];
+					$local_info->exif_comment = @$exif_data["Comments"];
+					$local_info->exif_tags =  @explode(";", $exif_data["Keywords"]);
 				}
 			}
 			
