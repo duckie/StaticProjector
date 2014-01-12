@@ -23,7 +23,7 @@ class sp_Template
 	}
 
 	/**
-	 * This function searches for the given template and creates it if it does not exist
+	 * This function searches for the given template
 	 */
 	private function load_template()
 	{
@@ -34,7 +34,11 @@ class sp_Template
 			
 			if(!file_exists($controller))
 			{
-				if($this -> name == "default")
+        $controller = $this -> sp -> coretemplatesdir()."/".$this->name."_controller.php";
+        if(! file_exists($controller)) {
+          $controller = $this -> sp -> coretemplatesdir()."/default_controller.php";
+        }
+				/*if($this -> name == "default")
 				{
 					$default_controller = $this -> sp -> defaultsdir()."/default_controller.php";
 					@copy($default_controller, $controller);
@@ -45,14 +49,18 @@ class sp_Template
 					$base_code = file_get_contents($this -> sp -> defaultsdir()."/new_controller.txt");
 					$controller_code = str_replace("%controller_name%", $this->name."_controller", $base_code);
 					file_put_contents($controller, $controller_code);
-				}
+				}*/
 			}
 			require_once($controller);
 
 			$template = $this -> sp -> targetdir()."/".sp_StaticProjector::templates_dir."/".$this->name."_template.php";
 			if(!file_exists($template))
 			{
-				if($this -> name == "default")
+        $template = $this -> sp -> coretemplatesdir()."/".$this->name."_template.php";
+        if(! file_exists($template)) {
+          $template = $this -> sp -> coretemplatesdir()."/default_template.php";
+        }
+				/*if($this -> name == "default")
 				{
 					$default_template = $this -> sp -> defaultsdir()."/default_template.php";
 					@copy($default_template, $template);
@@ -71,7 +79,7 @@ class sp_Template
 					$template_code = str_replace("%template_name%", $this -> name."_template", $template_base);
 					$template_code = str_replace("%template_chunks%", $chunks_code, $template_code);
 					file_put_contents($template, $template_code);
-				}
+				}*/
 			}
 			require_once($template);
 			sp_StaticRegister::pop_object("sp");

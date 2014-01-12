@@ -6,9 +6,9 @@ website.author = Put your name here
 sp.use_commands = Yes
 
 # Set it to No, Auto or Yes.
-# No - The cache is never generated. To be used when you know what youre doing
+# No - The cache is never generated. Regen can be forced by deleting "commands/delete_me_to_regen_cache
 # Yes - The cache is rewritten if needed. The whole file structure is browsed to be checked.
-sp.regen_cache = Yes
+sp.regen_cache = No
 
 # Activate logging things : set it to Yes or No
 # Useful for debugging purpose if someting is wrong
@@ -20,7 +20,7 @@ sp.notfound_route = error404
 
 # Fancy URLs : You can enable fancy urls if your web host supports them
 # You get http://www.yoursite.com/mypenguinsphoto/madpenguin2 instead of http://www.yoursite.com/?/mypenguinsphoto/madpenguin2
-# If you are not sure, you can try to turn in on and get it back off if a problem occurs
+# If you are not sure, you can try to turn it on and get it back off if a problem occurs
 sp.enable_fancy_urls = No
 
 # Timezone to be used in the php date() function

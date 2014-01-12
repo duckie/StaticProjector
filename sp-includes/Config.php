@@ -54,6 +54,7 @@ class sp_Config
 			{
 				unlink($iDir);
 			}	
+      echo("\n$iDir\n");
 			mkdir($iDir,sp_StaticProjector::dir_create_rights,true);
 			$created = true;
 		}
@@ -119,21 +120,6 @@ class sp_Config
 			$default_route = $this -> sp -> defaultsdir().'/'.sp_StaticProjector::routes_file;
 			$dest_route = $this->sp->targetdir().'/'.sp_StaticProjector::config_dir.'/'.sp_StaticProjector::routes_file;
 			$this -> copy_default_file($default_route, $dest_route);
-			
-			if (! file_exists($this->sp->targetdir().'/'.sp_StaticProjector::cache_dir.'/.htaccess'))
-				sp_set_http_granting($this->sp->targetdir().'/'.sp_StaticProjector::cache_dir, SP_HTTP_DENY_ACCESS);
-			
-			if (! file_exists($this->sp->targetdir().'/'.sp_StaticProjector::config_dir.'/.htaccess'))
-				sp_set_http_granting($this->sp->targetdir().'/'.sp_StaticProjector::config_dir, SP_HTTP_DENY_ACCESS);
-			
-			if (! file_exists($this->sp->targetdir().'/'.sp_StaticProjector::user_cache_dir.'/.htaccess'))
-				sp_set_http_granting($this->sp->targetdir().'/'.sp_StaticProjector::user_cache_dir, SP_HTTP_DENY_ACCESS);
-			
-			if (! file_exists($this->sp->targetdir().'/'.sp_StaticProjector::style_dir.'/.htaccess'))
-				sp_set_http_granting($this->sp->targetdir().'/'.sp_StaticProjector::style_dir, SP_HTTP_DENY_LISTING);
-			
-			if (! file_exists($this->sp->targetdir().'/'.sp_StaticProjector::webcache_dir.'/.htaccess'))
-				sp_set_http_granting($this->sp->targetdir().'/'.sp_StaticProjector::webcache_dir, SP_HTTP_DENY_LISTING);
 			
 			$this -> env_checked = true;
 		}

@@ -12,7 +12,7 @@ class sp_full_static_projector_01 extends sp_test
 			$cleaner = new sp_RecursiveDeleter($target_dir);
 			$cleaner -> execute();
 		}
-		@mkdir($target_dir,null,true);
+		@mkdir($target_dir,0750,true);
 		
 		
 		ob_start();

@@ -14,6 +14,7 @@ class sp_Routes
 	
 	public function execute_request($iRequest)
 	{
+    $this -> sp -> log(sp_Logger::info, "{Routes} Parsing request '$iRequest'.");
 		$this -> success = false;
 		$this -> route_data = null;
 		$this -> template_name = null;

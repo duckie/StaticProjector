@@ -14,8 +14,8 @@ function RunTest($iName,$iParams = array())
 
 function RunAndPrintTest($iName,$iParams = array())
 {
-	echo($iName.": ");
 	$success = RunTest($iName,$iParams);
+	echo($iName.": ");
 	echo($success ? "OK" : "FAIL");
 	echo("<br />");
 }

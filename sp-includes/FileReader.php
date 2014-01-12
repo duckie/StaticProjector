@@ -274,6 +274,7 @@ class sp_FileReader
 				if("." !== $entry && ".." !== $entry)
 				{
 					$next_path = $local_info -> absolute_path."/".$entry;
+          # Do what you want with this in your templates
 					$this -> recursive_read($next_path, $max_iter - 1);
 				}
 			}

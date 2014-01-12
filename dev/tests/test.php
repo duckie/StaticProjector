@@ -32,8 +32,9 @@ abstract class sp_test
 		$success = false;
 
 		$output_dir = __DIR__."/output";
-		if(!file_exists($output_dir))
-			mkdir($output_dir);
+		if(!file_exists($output_dir)) {
+			mkdir($output_dir,0750);
+    }
 
 		$success = $this -> private_run($iParameters);		
 		if($success)

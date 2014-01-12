@@ -8,10 +8,10 @@ class sp_file_utils_01 extends sp_test
 		
 		$od = $this -> output_dir();
 		
-		mkdir("$od/test_timestamp/lvl1_dir1/lvl2_dir1",null,true);
-		mkdir("$od/test_timestamp/lvl1_dir1/lvl2_dir2",null,true);
-		mkdir("$od/test_timestamp/lvl1_dir2/lvl2_dir1",null,true);
-		mkdir("$od/test_timestamp/lvl1_dir2/lvl2_dir2",null,true);
+		mkdir("$od/test_timestamp/lvl1_dir1/lvl2_dir1",0750,true);
+		mkdir("$od/test_timestamp/lvl1_dir1/lvl2_dir2",0750,true);
+		mkdir("$od/test_timestamp/lvl1_dir2/lvl2_dir1",0750,true);
+		mkdir("$od/test_timestamp/lvl1_dir2/lvl2_dir2",0750,true);
 		
 		$timestamp1 = sp_FileReader::get_directory_last_modified("$od/test_timestamp");
 		

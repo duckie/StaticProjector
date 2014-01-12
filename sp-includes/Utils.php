@@ -23,18 +23,18 @@ define("SP_HTTP_DENY_ACCESS",3);
  * @param string $iDirectoryName The path to the directory that has to be managed
  * @param int $iGrant Can take the value SP_HTTP_NO_RULE, SP_HTTP_ALLOW_ACCESS, SP_HTTP_DENY_LISTING or SP_HTTP_DENY_ACCESS
  */
-function sp_set_http_granting($iDirectoryName, $iGrant)
-{
-	sp_assert(is_dir($iDirectoryName));
-	if(SP_HTTP_NO_RULE == $iGrant)
-		file_put_contents("$iDirectoryName/.htaccess", '');
-	else if(SP_HTTP_ALLOW_ACCESS == $iGrant)
-		file_put_contents("$iDirectoryName/.htaccess", "allow from all\nOptions +Indexes\n");
-	else if(SP_HTTP_DENY_LISTING == $iGrant)
-		file_put_contents("$iDirectoryName/.htaccess", "allow from all\nOptions -Indexes\n");
-	else if(SP_HTTP_DENY_ACCESS == $iGrant)
-		file_put_contents("$iDirectoryName/.htaccess", "deny from all\n");
-}
+//function sp_set_http_granting($iDirectoryName, $iGrant)
+//{
+//	sp_assert(is_dir($iDirectoryName));
+//	if(SP_HTTP_NO_RULE == $iGrant)
+//		file_put_contents("$iDirectoryName/.htaccess", '');
+//	else if(SP_HTTP_ALLOW_ACCESS == $iGrant)
+//		file_put_contents("$iDirectoryName/.htaccess", "allow from all\nOptions +Indexes\n");
+//	else if(SP_HTTP_DENY_LISTING == $iGrant)
+//		file_put_contents("$iDirectoryName/.htaccess", "allow from all\nOptions -Indexes\n");
+//	else if(SP_HTTP_DENY_ACCESS == $iGrant)
+//		file_put_contents("$iDirectoryName/.htaccess", "deny from all\n");
+//}
 
 /**
  * Add "/" at the beginning of the path if missing and delete "/" at the end

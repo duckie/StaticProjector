@@ -27,11 +27,11 @@ class sp_StaticProjector
 
 	const version = '0.1'; 
 	const data_dir = 'data';
-	const remote_dir = 'commands'; // Remote here is about the tool to send SP some commands, like a TV remote
-	const user_cache_dir = 'web-data/data';
-	const config_dir = 'web-data';
-	const templates_dir = 'web-data/templates';
-	const style_dir = 'web-data/styles';
+	const remote_dir = 'cache/commands'; // Remote here is about the tool to send SP some commands, like a TV remote
+	const user_cache_dir = 'metadata';
+	const config_dir = 'config';
+	const templates_dir = 'sp-local/templates';
+	const style_dir = 'static/styles';
 	const style_file = 'style.css';
 	const cache_dir = 'cache';
 	const webcache_dir = 'cache/web';
@@ -66,7 +66,7 @@ class sp_StaticProjector
 	{
 		$this -> basedir = str_replace("\\", "/", $iBasedir);
 		$this -> targetdir = str_replace("\\", "/", $iTargetDir);
-		$this -> baseurl = ('/' === substr($iBaseUrl, strlen($iBaseUrl)-1)) ? substr($iBaseUrl,0, strlen($iBaseUrl)-1) : iBaseUrl;
+		$this -> baseurl = ('/' === substr($iBaseUrl, strlen($iBaseUrl)-1)) ? substr($iBaseUrl,0, strlen($iBaseUrl)-1) : $iBaseUrl;
 		$this -> request = sp_filter_path(preg_replace('#^/?index\.php#', '', $iRequest));
 		$this -> config = new sp_Config($this);
 		$this -> logger = new sp_Logger($this);
@@ -88,6 +88,11 @@ class sp_StaticProjector
 	public function defaultsdir()
 	{
 		return sp_StaticProjector::exec_dir."/".sp_StaticProjector::defaults_dir;
+	}
+	
+	public function coretemplatesdir()
+	{
+		return sp_StaticProjector::exec_dir."/templates";
 	}
 	
 	public function resources()
@@ -143,9 +148,11 @@ class sp_StaticProjector
 	public function execute_request($iRequest)
 	{
 		$success = $this -> routes -> execute_request(sp_filter_path($iRequest));
-		
-		if(!$success)
-			$success = $this -> routes -> execute_request( $this -> config -> get_fail_route());
+		if(!$success) {
+      $fail_route =  $this -> config -> get_fail_route();
+      $this->log(sp_Logger::error,"{Main} Failed to route request '$iRequest', fall back to '$fail_route'");
+			$success = $this -> routes -> execute_request($fail_route);
+    }
 		
 		if($success)
 		{
