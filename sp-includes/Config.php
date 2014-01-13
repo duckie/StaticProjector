@@ -54,7 +54,6 @@ class sp_Config
 			{
 				unlink($iDir);
 			}	
-      echo("\n$iDir\n");
 			mkdir($iDir,sp_StaticProjector::dir_create_rights,true);
 			$created = true;
 		}
@@ -106,16 +105,16 @@ class sp_Config
 			
 			$this -> mkdir(sp_file($this->sp->targetdir(),sp_StaticProjector::user_cache_dir));
 			$this -> mkdir(sp_file($this->sp->targetdir(),sp_StaticProjector::templates_dir));
-			$this -> mkdir($this->sp->targetdir().'/'.sp_StaticProjector::style_dir);
+			//$this -> mkdir($this->sp->targetdir().'/'.sp_StaticProjector::style_dir);
 			$this -> mkdir($this->sp->targetdir().'/'.sp_StaticProjector::webcache_dir);
 			
 			$default_config = $this -> sp -> defaultsdir().'/'.sp_StaticProjector::config_file;
 			$dest_config = $this->sp->targetdir().'/'.sp_StaticProjector::config_dir.'/'.sp_StaticProjector::config_file;
 			$this -> copy_default_file($default_config, $dest_config);
 			
-			$default_css = $this -> sp -> defaultsdir().'/'.sp_StaticProjector::style_file;
-			$dest_css = $this->sp->targetdir().'/'.sp_StaticProjector::style_dir.'/'.sp_StaticProjector::style_file;
-			$this -> copy_default_file($default_css, $dest_css);
+			//$default_css = $this -> sp -> defaultsdir().'/'.sp_StaticProjector::style_file;
+			//$dest_css = $this->sp->targetdir().'/'.sp_StaticProjector::style_dir.'/'.sp_StaticProjector::style_file;
+			//$this -> copy_default_file($default_css, $dest_css);
 			
 			$default_route = $this -> sp -> defaultsdir().'/'.sp_StaticProjector::routes_file;
 			$dest_route = $this->sp->targetdir().'/'.sp_StaticProjector::config_dir.'/'.sp_StaticProjector::routes_file;
