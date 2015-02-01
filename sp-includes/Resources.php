@@ -184,7 +184,7 @@ class sp_ResourceBrowser
 		
 		// creating multi sort params		
 		$orders = $iCriterion -> orders_by();	
-		if(count($orders))
+		if(count($result_set) && count($orders))
 		{
 			$ordering_keys = array();
 			foreach($orders as $order)
